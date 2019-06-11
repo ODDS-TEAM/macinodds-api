@@ -40,3 +40,15 @@ $ source ~/.bash_profile
 $ go env
 $ go version
 ```
+
+##### Pull package
+
+```
+$ go get
+```
+
+##### Run
+
+```
+$ go run server.go
+```
