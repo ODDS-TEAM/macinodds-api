@@ -12,26 +12,12 @@ Install brew from [brew.sh](http://brew.sh/)
 $ brew install git 
 ```
 
-##### Install Go 1.10+
+##### Install Go
 
 Install golang binaries using `brew`
 
 ```
 $ brew install go
-```
-
-##### Setup PATH
-
-Add the PATH to your ``~/.bash_profile``. 
-
-```
-export PATH=${HOME}/go/bin:$PATH
-```
-
-##### Source the new environment
-
-```
-$ source ~/.bash_profile
 ```
 
 ##### Testing it all
