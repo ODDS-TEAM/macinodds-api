@@ -1,16 +1,16 @@
 # Install Golang : OS X
 
-##### Install brew
+### Install brew
 
 Install brew from [brew.sh](http://brew.sh/)
 
-##### Install Git
+### Install Git
 
 ```
 $ brew install git 
 ```
 
-##### Install Go
+### Install Go
 
 Install golang binaries using `brew`
 
@@ -18,20 +18,20 @@ Install golang binaries using `brew`
 $ brew install go
 ```
 
-##### Testing it all
+### Testing it all
 
 ```
 $ go env
 $ go version
 ```
 
-##### Pull package
+### Pull package
 
 ```
 $ go get
 ```
 
-##### Run
+### Run
 
 ```
 $ go run server.go
