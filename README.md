@@ -1,6 +1,4 @@
-# Install Golang
-
-## OS X
+# Install Golang : OS X
 
 ##### Install brew
 
