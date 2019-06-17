@@ -1,0 +1,5 @@
+package deviceController
+
+func GetDevices() {
+
+}
