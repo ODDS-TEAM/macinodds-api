@@ -1,5 +1,0 @@
-package deviceController
-
-func GetDevices() {
-
-}
