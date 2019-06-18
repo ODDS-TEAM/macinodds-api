@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -68,12 +69,14 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 }
 
 func (h *Handler) RemoveDevice(c echo.Context) (err error) {
-	id := c.Param("id")
-
 	db := h.DB.Clone()
+	id := c.Param("id")
+	idoi := bson.ObjectIdHex(id)
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+	fmt.Println("todo ID = " + idoi)
+
+	if err = db.DB("macinodds").C("devices").RemoveId(idoi); err != nil {
 		return
 	}
 
