@@ -2,17 +2,20 @@ package main
 
 import (
 	"github.com/labstack/echo"
-	"gitlab.odds.team/internship/macinodds-api/devices-api/route"
+	"github.com/labstack/echo/middleware"
+	route "gitlab.odds.team/internship/macinodds-api/routes"
 )
 
 func main() {
 	e := echo.New()
 
-	// Connects to the database
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	// Initial routes
+	// Initialize routes
 	route.Init(e)
 
-	// Runs the server
+	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
 }
