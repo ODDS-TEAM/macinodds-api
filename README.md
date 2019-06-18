@@ -39,7 +39,7 @@ $ go run server.go
 
 ##### API routes
 
-API url : `139.5.146.213:27017`
+API url : `139.5.146.213:1323`
 
 ```
 	e.GET("/api", h.GetAPI)
