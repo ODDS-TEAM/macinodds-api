@@ -45,7 +45,7 @@ API url : `139.5.146.213:1323`
 	e.GET("/api", h.GetAPI)
 	e.GET("/api/devices", h.GetDevices)
 	e.GET("/api/devices/:id", handler.GetByID)
-	e.POST("/api/device", h.CreateDevice)
+	e.POST("/api/devices", h.CreateDevice)
 	e.PUT("/api/devices/:id", handler.EditDevice)
 	e.DELETE("/api/divices/:id", handler.RemoveDevice)
 ```
