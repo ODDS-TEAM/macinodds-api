@@ -22,6 +22,6 @@ func Init(e *echo.Echo) {
 	e.GET("/api/devices", h.GetDevices)
 	e.GET("/api/devices/:id", h.GetByID)
 	e.POST("/api/devices", h.CreateDevice)
-	// e.PUT("/api/devices/:id", handler.EditDevice)
+	e.PUT("/api/devices/:id", h.UpdateDevice)
 	e.DELETE("/api/devices/:id", h.RemoveDevice)
 }

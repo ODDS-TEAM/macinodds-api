@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -10,35 +9,36 @@ import (
 )
 
 // Handler
+
 func (h *Handler) GetAPI(c echo.Context) (err error) {
 	return c.String(http.StatusOK, "Welcome to Macinodds devices API v.1.0!")
 }
 
 func (h *Handler) GetDevices(c echo.Context) (err error) {
-	devices := []*model.Device{}
+	dv := []*model.Device{}
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{}).All(&devices); err != nil {
+	if err = db.DB("macinodds").C("devices").Find(bson.M{}).All(&dv); err != nil {
 		return
 	}
 
-	return c.JSON(http.StatusOK, devices)
+	return c.JSON(http.StatusOK, dv)
 }
 
 func (h *Handler) GetByID(c echo.Context) (err error) {
-	device := model.Device{}
+	dv := model.Device{}
 	id := c.Param("id")
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&device); err != nil {
+	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&dv); err != nil {
 		return
 	}
 
-	return c.JSON(http.StatusOK, device)
+	return c.JSON(http.StatusOK, dv)
 }
 
 func (h *Handler) CreateDevice(c echo.Context) (err error) {
@@ -50,7 +50,7 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	}
 
 	// Validation
-	if dv.Name == "" || dv.Serial == "" {
+	if dv.Name == "" || dv.Serial == "" || dv.Spec == "" {
 		return &echo.HTTPError{
 			Code:    http.StatusBadRequest,
 			Message: "invalid to or message fields",
@@ -60,7 +60,7 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	// Save post in database
+	// Save device in database
 	if err = db.DB("macinodds").C("devices").Insert(dv); err != nil {
 		return
 	}
@@ -68,15 +68,41 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, dv)
 }
 
-func (h *Handler) RemoveDevice(c echo.Context) (err error) {
+func (h *Handler) UpdateDevice(c echo.Context) (err error) {
+	dv := &model.Device{}
+	id := bson.ObjectIdHex(c.Param("id"))
+
+	if err = c.Bind(dv); err != nil {
+		return
+	}
+
 	db := h.DB.Clone()
-	id := c.Param("id")
-	idoi := bson.ObjectIdHex(id)
 	defer db.Close()
 
-	fmt.Println("todo ID = " + idoi)
+	// Validation
+	if dv.Name == "" || dv.Serial == "" || dv.Spec == "" {
+		return &echo.HTTPError{
+			Code:    http.StatusBadRequest,
+			Message: "invalid to or message fields",
+		}
+	}
 
-	if err = db.DB("macinodds").C("devices").RemoveId(idoi); err != nil {
+	// Update device in database
+	if err = db.DB("macinodds").C("devices").Update(bson.M{"_id": id}, &dv); err != nil {
+		return
+	}
+
+	dv.ID = id
+
+	return c.JSON(http.StatusOK, dv)
+}
+
+func (h *Handler) RemoveDevice(c echo.Context) (err error) {
+	db := h.DB.Clone()
+	id := bson.ObjectIdHex(c.Param("id"))
+	defer db.Close()
+
+	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
 		return
 	}
 
