@@ -62,7 +62,6 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
 	log.Println(imgName)
 	filePath := "/app/devices/" + imgName
-	// filePath := imgName
 
 	dst, err := os.Create(filePath)
 	if err != nil {
@@ -133,12 +132,12 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 
 func (h *Handler) RemoveDevice(c echo.Context) (err error) {
 	dv := model.Device{}
-	id := c.Param("id")
+	id := bson.ObjectIdHex(c.Param("id"))
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&dv); err != nil {
+	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
@@ -154,7 +153,7 @@ func (h *Handler) RemoveDevice(c echo.Context) (err error) {
 
 	// Remove device in DB
 	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
-		return err
+		return
 	}
 
 	return c.JSON(http.StatusOK, err)
