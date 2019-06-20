@@ -71,7 +71,7 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	// random filename, retaining existing extension.
 	imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
 	log.Println(imgName)
-	filePath := "./devices/" + imgName
+	filePath := "/app/devices/" + imgName
 	// filePath := imgName
 
 	dst, err := os.Create(filePath)
