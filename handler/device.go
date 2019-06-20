@@ -13,17 +13,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type (
-	form struct {
-		ID    bson.ObjectId `json:"id" bson:"_id,omitempty"`
-		Name  string        `json:"name" bson:"name"`
-		Email string        `json:"email" bson:"email"`
-		File  string        `json:"file" bson:"file"`
-		Size  int64         `json:"size"`
-	}
-)
-
-// Handler
+// Handler.GetAPI
 func (h *Handler) GetAPI(c echo.Context) (err error) {
 	return c.String(http.StatusOK, "Welcome to Macinodds devices API v.1.0!")
 }
@@ -142,13 +132,30 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 }
 
 func (h *Handler) RemoveDevice(c echo.Context) (err error) {
+	dv := model.Device{}
+	id := c.Param("id")
+
 	db := h.DB.Clone()
-	id := bson.ObjectIdHex(c.Param("id"))
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&dv); err != nil {
 		return
 	}
 
-	return err
+	imgName := dv.Img
+	log.Println(imgName)
+	filePath := "/app/devices/" + imgName
+	log.Println(filePath)
+
+	// Remove image in Storage
+	if err := os.Remove(filePath); err != nil {
+		return err
+	}
+
+	// Remove device in DB
+	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, err)
 }
