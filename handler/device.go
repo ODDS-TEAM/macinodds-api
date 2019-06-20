@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path"
@@ -70,9 +70,9 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 
 	// random filename, retaining existing extension.
 	imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
-	fmt.Println(imgName)
-	//filePath := "./devices/" + imgName
-	filePath := imgName
+	log.Println(imgName)
+	filePath := "./devices/" + imgName
+	// filePath := imgName
 
 	dst, err := os.Create(filePath)
 	if err != nil {
