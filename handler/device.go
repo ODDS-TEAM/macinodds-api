@@ -128,7 +128,7 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 	fmt.Println("new : ", ndv.Img)
 	fmt.Println("old : ", dv.Img)
 
-	if ndv.Img != dv.Img {
+	if ndv.Img != dv.Img || ndv.Img == "" {
 		fmt.Println("Image Not Math")
 		// Source
 		file, err := c.FormFile("img")
