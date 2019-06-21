@@ -164,12 +164,14 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 		}
 
 		imgName := dv.Img
-		filePath = "/app/devices/" + imgName
-		log.Println(filePath)
+		if imgName != "" {
+			filePath = "/app/devices/" + imgName
+			log.Println(filePath)
 
-		// Remove image in Storage
-		if err := os.Remove(filePath); err != nil {
-			return err
+			// Remove image in Storage
+			if err := os.Remove(filePath); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -202,17 +204,20 @@ func (h *Handler) RemoveDevice(c echo.Context) (err error) {
 	}
 
 	imgName := dv.Img
-	filePath := "/app/devices/" + imgName
-	log.Println(filePath)
+	if imgName != "" {
 
-	// Remove image in Storage
-	if err := os.Remove(filePath); err != nil {
-		return err
-	}
+		filePath := "/app/devices/" + imgName
+		log.Println(filePath)
 
-	// Remove device in DB
-	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
-		return
+		// Remove image in Storage
+		if err := os.Remove(filePath); err != nil {
+			return err
+		}
+
+		// Remove device in DB
+		if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+			return
+		}
 	}
 
 	return c.JSON(http.StatusOK, err)
