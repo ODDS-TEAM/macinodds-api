@@ -6,8 +6,9 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// Init sets
 func Init(e *echo.Echo) {
-	// Database connection
+	// Database connection.
 	const DBUrl = "139.5.146.213:27017"
 	db, err := mgo.Dial(DBUrl)
 	if err != nil {
@@ -24,4 +25,5 @@ func Init(e *echo.Echo) {
 	e.POST("/api/devices", h.CreateDevice)
 	e.PUT("/api/devices/:id", h.UpdateDevice)
 	e.DELETE("/api/devices/:id", h.RemoveDevice)
+	e.DELETE("/api/db/:id", h.RemoveDB)
 }
