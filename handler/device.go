@@ -165,6 +165,7 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 
 		imgName := dv.Img
 		if imgName != "" {
+			fmt.Print("image remove empty")
 			filePath = "/app/devices/" + imgName
 			log.Println(filePath)
 
@@ -213,11 +214,10 @@ func (h *Handler) RemoveDevice(c echo.Context) (err error) {
 		if err := os.Remove(filePath); err != nil {
 			return err
 		}
-
-		// Remove device in DB
-		if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
-			return
-		}
+	}
+	// Remove device in DB
+	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+		return
 	}
 
 	return c.JSON(http.StatusOK, err)
