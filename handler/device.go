@@ -123,6 +123,8 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 		return
 	}
 
+	fmt.Println("new : ", ndv)
+	fmt.Println("old : ", dv)
 	fmt.Println("new : ", ndv.Img)
 	fmt.Println("old : ", dv.Img)
 
@@ -145,8 +147,8 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 
 		// random filename, retaining existing extension.
 		imgNewName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
-		log.Println(imgNewName)
 		filePath := "/app/devices/" + imgNewName
+		log.Println(filePath)
 
 		dst, err := os.Create(filePath)
 		if err != nil {
@@ -154,7 +156,7 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 		}
 		defer dst.Close()
 
-		dv.Img = imgNewName
+		ndv.Img = imgNewName
 
 		// Copy
 		if _, err = io.Copy(dst, src); err != nil {
