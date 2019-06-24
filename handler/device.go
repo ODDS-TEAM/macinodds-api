@@ -110,7 +110,8 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 	id := bson.ObjectIdHex(c.Param("id"))
 	ndv := &model.Device{
-		ID: id,
+		ID:         id,
+		UpdateTime: time.Now(),
 	}
 
 	if err = c.Bind(ndv); err != nil {
