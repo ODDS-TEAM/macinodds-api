@@ -27,7 +27,7 @@ func (h *Handler) GetDevices(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(nil).Sort("status", "updateTime").All(&dv); err != nil {
+	if err = db.DB("macinodds").C("devices").Find(nil).Sort("-status", "-updateTime").All(&dv); err != nil {
 		return
 	}
 
