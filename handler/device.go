@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"time"
 
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo"
@@ -26,7 +27,7 @@ func (h *Handler) GetDevices(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{}).All(&dv); err != nil {
+	if err = db.DB("macinodds").C("devices").Find(nil).Sort("status", "updateTime").All(&dv); err != nil {
 		return
 	}
 
@@ -52,7 +53,8 @@ func (h *Handler) GetByID(c echo.Context) (err error) {
 func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	// Create
 	dv := &model.Device{
-		ID: bson.NewObjectId(),
+		ID:         bson.NewObjectId(),
+		UpdateTime: time.Now(),
 	}
 	if err = c.Bind(dv); err != nil {
 		return err
