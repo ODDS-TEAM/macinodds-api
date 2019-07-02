@@ -9,7 +9,7 @@ import (
 // Init initialize api routes and set up a connection.
 func Init(e *echo.Echo) {
 	// Database connection.
-	const DBUrl = "localhost:27017"
+	const DBUrl = "mac.odds.team:27017"
 	db, err := mgo.Dial(DBUrl)
 	if err != nil {
 		e.Logger.Fatal(err)
