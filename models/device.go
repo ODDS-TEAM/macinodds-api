@@ -17,6 +17,6 @@ type (
 		Holder     string        `json:"holder" bson:"holder"`
 		Tel        string        `json:"tel" bson:"tel"`
 		Img        string        `json:"img" bson:"img"`
-		UpdateTime time.Time     `json:"updateTime" bson:"updateTime"`
+		LastUpdate time.Time     `json:"lastUpdate" bson:"lastUpdate"`
 	}
 )

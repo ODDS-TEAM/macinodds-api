@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"fmt"
@@ -15,19 +15,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// GetAPI is
-func (h *Handler) GetAPI(c echo.Context) (err error) {
-	return c.String(http.StatusOK, "Welcome to Macinodds devices API v.1.0!")
-}
-
 // GetDevices is
-func (h *Handler) GetDevices(c echo.Context) (err error) {
+func (h *Handler) GetMac(c echo.Context) (err error) {
 	dv := []*model.Device{}
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(nil).Sort("-status", "-updateTime").All(&dv); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").Find(nil).Sort("-status", "-updateTime").All(&dv); err != nil {
 		return
 	}
 
@@ -35,14 +30,14 @@ func (h *Handler) GetDevices(c echo.Context) (err error) {
 }
 
 // GetByID is a function of >>
-func (h *Handler) GetByID(c echo.Context) (err error) {
+func (h *Handler) GetMacByID(c echo.Context) (err error) {
 	dv := model.Device{}
 	id := bson.ObjectIdHex(c.Param("id"))
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
@@ -50,11 +45,11 @@ func (h *Handler) GetByID(c echo.Context) (err error) {
 }
 
 // CreateDevice is
-func (h *Handler) CreateDevice(c echo.Context) (err error) {
+func (h *Handler) CreateMac(c echo.Context) (err error) {
 	// Create
 	dv := &model.Device{
 		ID:         bson.NewObjectId(),
-		UpdateTime: time.Now(),
+		LastUpdate: time.Now(),
 	}
 	if err = c.Bind(dv); err != nil {
 		return err
@@ -80,7 +75,7 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	// random filename, retaining existing extension.
 	imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
 	log.Println(imgName)
-	filePath := "/app/devices/" + imgName
+	filePath := "/app/mac/" + imgName
 
 	dst, err := os.Create(filePath)
 	if err != nil {
@@ -99,7 +94,7 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 	defer db.Close()
 
 	// Save device in database
-	if err = db.DB("macinodds").C("devices").Insert(&dv); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").Insert(&dv); err != nil {
 		return err
 	}
 
@@ -107,11 +102,11 @@ func (h *Handler) CreateDevice(c echo.Context) (err error) {
 }
 
 // UpdateDevice is
-func (h *Handler) UpdateDevice(c echo.Context) (err error) {
+func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	id := bson.ObjectIdHex(c.Param("id"))
 	ndv := &model.Device{
 		ID:         id,
-		UpdateTime: time.Now(),
+		LastUpdate: time.Now(),
 	}
 
 	if err = c.Bind(ndv); err != nil {
@@ -122,12 +117,10 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
-	fmt.Println("new : ", ndv)
-	fmt.Println("old : ", dv)
 	fmt.Println("new : ", ndv.Img)
 	fmt.Println("old : ", dv.Img)
 
@@ -148,9 +141,9 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 		}
 		defer src.Close()
 
-		// random filename, retaining existing extension.
+		// Random filename, retaining existing extension.
 		imgNewName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
-		filePath := "/app/devices/" + imgNewName
+		filePath := "/app/mac/" + imgNewName
 		log.Println(filePath)
 
 		dst, err := os.Create(filePath)
@@ -169,7 +162,7 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 		imgName := dv.Img
 		if imgName != "" {
 			fmt.Print("image remove empty")
-			filePath = "/app/devices/" + imgName
+			filePath = "/app/mac/" + imgName
 			log.Println(filePath)
 
 			// Remove image in Storage
@@ -188,7 +181,7 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 	}
 
 	// Update device in database
-	if err = db.DB("macinodds").C("devices").Update(bson.M{"_id": id}, &ndv); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").Update(bson.M{"_id": id}, &ndv); err != nil {
 		return
 	}
 
@@ -196,21 +189,21 @@ func (h *Handler) UpdateDevice(c echo.Context) (err error) {
 }
 
 // RemoveDevice is
-func (h *Handler) RemoveDevice(c echo.Context) (err error) {
+func (h *Handler) RemoveMac(c echo.Context) (err error) {
 	dv := model.Device{}
 	id := bson.ObjectIdHex(c.Param("id"))
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("macinodds").C("devices").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
 	imgName := dv.Img
 	if imgName != "" {
 
-		filePath := "/app/devices/" + imgName
+		filePath := "/app/mac/" + imgName
 		log.Println(filePath)
 
 		// Remove image in Storage
@@ -219,22 +212,7 @@ func (h *Handler) RemoveDevice(c echo.Context) (err error) {
 		}
 	}
 	// Remove device in DB
-	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
-		return
-	}
-
-	return c.JSON(http.StatusOK, err)
-}
-
-// RemoveDB is
-func (h *Handler) RemoveDB(c echo.Context) (err error) {
-	id := bson.ObjectIdHex(c.Param("id"))
-
-	db := h.DB.Clone()
-	defer db.Close()
-
-	// Remove device in DB
-	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+	if err = db.DB("mac.odds.team").C("mac").RemoveId(id); err != nil {
 		return
 	}
 

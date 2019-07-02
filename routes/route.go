@@ -2,28 +2,35 @@ package route
 
 import (
 	"github.com/labstack/echo"
-	"gitlab.odds.team/internship/macinodds-api/handler"
+	"gitlab.odds.team/internship/macinodds-api/api"
 	"gopkg.in/mgo.v2"
 )
 
-// Init sets
+// Init initialize api routes and set up a connection.
 func Init(e *echo.Echo) {
 	// Database connection.
-	const DBUrl = "139.5.146.213:27017"
+	const DBUrl = "localhost:27017"
 	db, err := mgo.Dial(DBUrl)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
 
 	// Initialize handler
-	h := &handler.Handler{DB: db}
+	api := &api.Handler{
+		DB: db,
+	}
 
-	// Initailize routes
-	e.GET("/api", h.GetAPI)
-	e.GET("/api/devices", h.GetDevices)
-	e.GET("/api/devices/:id", h.GetByID)
-	e.POST("/api/devices", h.CreateDevice)
-	e.PUT("/api/devices/:id", h.UpdateDevice)
-	e.DELETE("/api/devices/:id", h.RemoveDevice)
-	e.DELETE("/api/db/:id", h.RemoveDB)
+	// Routes
+	e.GET("/", api.GetWelcome)
+	// e.POST("/signin", api.SignIn)
+
+	m := e.Group("/mac")
+	m.GET("", api.GetMac)
+	m.GET("/:id", api.GetMacByID)
+	m.POST("", api.CreateMac)
+	m.PUT("/:id", api.UpdateMac)
+	m.DELETE("/:id", api.RemoveMac)
+
+	// Delete data in directly database
+	e.DELETE("/db/:id", api.RemoveMacInDB)
 }

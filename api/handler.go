@@ -1,8 +1,6 @@
-package handler
+package api
 
-import (
-	"gopkg.in/mgo.v2"
-)
+import "gopkg.in/mgo.v2"
 
 type (
 	Handler struct {
