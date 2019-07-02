@@ -22,7 +22,7 @@ func (h *Handler) GetMac(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac.odds.team").C("mac").Find(nil).Sort("-status", "-updateTime").All(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(nil).Sort("-status", "-updateTime").All(&dv); err != nil {
 		return
 	}
 
@@ -37,7 +37,7 @@ func (h *Handler) GetMacByID(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac.odds.team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
@@ -94,7 +94,7 @@ func (h *Handler) CreateMac(c echo.Context) (err error) {
 	defer db.Close()
 
 	// Save device in database
-	if err = db.DB("mac.odds.team").C("mac").Insert(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Insert(&dv); err != nil {
 		return err
 	}
 
@@ -117,7 +117,7 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac.odds.team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
@@ -181,7 +181,7 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	}
 
 	// Update device in database
-	if err = db.DB("mac.odds.team").C("mac").Update(bson.M{"_id": id}, &ndv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Update(bson.M{"_id": id}, &ndv); err != nil {
 		return
 	}
 
@@ -196,7 +196,7 @@ func (h *Handler) RemoveMac(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac.odds.team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
 		return
 	}
 
@@ -212,7 +212,7 @@ func (h *Handler) RemoveMac(c echo.Context) (err error) {
 		}
 	}
 	// Remove device in DB
-	if err = db.DB("mac.odds.team").C("mac").RemoveId(id); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").RemoveId(id); err != nil {
 		return
 	}
 

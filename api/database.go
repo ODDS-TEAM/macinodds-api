@@ -15,7 +15,7 @@ func (h *Handler) RemoveMacInDB(c echo.Context) (err error) {
 	defer db.Close()
 
 	// Remove device in DB
-	if err = db.DB("macinodds").C("devices").RemoveId(id); err != nil {
+	if err = db.DB("mac_odds_team").C("devices").RemoveId(id); err != nil {
 		return
 	}
 
