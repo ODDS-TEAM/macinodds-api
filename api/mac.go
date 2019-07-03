@@ -22,7 +22,7 @@ func (h *Handler) GetMac(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac_odds_team").C("mac").Find(nil).Sort("-status", "-updateTime").All(&m); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(nil).Sort("-status", "-lastUpdate").All(&m); err != nil {
 		return
 	}
 
