@@ -7,15 +7,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// RemoveDB is
+// RemoveMacInDB forced to remove data from the database directly.
 func (h *Handler) RemoveMacInDB(c echo.Context) (err error) {
 	id := bson.ObjectIdHex(c.Param("id"))
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	// Remove device in DB
-	if err = db.DB("mac_odds_team").C("devices").RemoveId(id); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").RemoveId(id); err != nil {
 		return
 	}
 

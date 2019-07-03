@@ -15,43 +15,43 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// GetDevices is
+// GetMac is
 func (h *Handler) GetMac(c echo.Context) (err error) {
-	dv := []*model.Device{}
+	m := []*model.Mac{}
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac_odds_team").C("mac").Find(nil).Sort("-status", "-updateTime").All(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(nil).Sort("-status", "-updateTime").All(&m); err != nil {
 		return
 	}
 
-	return c.JSON(http.StatusOK, dv)
+	return c.JSON(http.StatusOK, m)
 }
 
-// GetByID is a function of >>
+// GetMacByID is a function of >>
 func (h *Handler) GetMacByID(c echo.Context) (err error) {
-	dv := model.Device{}
+	m := model.Mac{}
 	id := bson.ObjectIdHex(c.Param("id"))
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&m); err != nil {
 		return
 	}
 
-	return c.JSON(http.StatusOK, dv)
+	return c.JSON(http.StatusOK, m)
 }
 
-// CreateDevice is
+// CreateMac is
 func (h *Handler) CreateMac(c echo.Context) (err error) {
 	// Create
-	dv := &model.Device{
+	m := &model.Mac{
 		ID:         bson.NewObjectId(),
 		LastUpdate: time.Now(),
 	}
-	if err = c.Bind(dv); err != nil {
+	if err = c.Bind(m); err != nil {
 		return err
 	}
 
@@ -83,7 +83,7 @@ func (h *Handler) CreateMac(c echo.Context) (err error) {
 	}
 	defer dst.Close()
 
-	dv.Img = imgName
+	m.Img = imgName
 
 	// Copy
 	if _, err = io.Copy(dst, src); err != nil {
@@ -93,38 +93,38 @@ func (h *Handler) CreateMac(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	// Save device in database
-	if err = db.DB("mac_odds_team").C("mac").Insert(&dv); err != nil {
+	// Save mac in database
+	if err = db.DB("mac_odds_team").C("mac").Insert(&m); err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, dv)
+	return c.JSON(http.StatusCreated, m)
 }
 
-// UpdateDevice is
+// UpdateMac is
 func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	id := bson.ObjectIdHex(c.Param("id"))
-	ndv := &model.Device{
+	nm := &model.Mac{
 		ID:         id,
 		LastUpdate: time.Now(),
 	}
 
-	if err = c.Bind(ndv); err != nil {
+	if err = c.Bind(nm); err != nil {
 		return
 	}
 
-	dv := &model.Device{}
+	m := &model.Mac{}
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&m); err != nil {
 		return
 	}
 
-	fmt.Println("new : ", ndv.Img)
-	fmt.Println("old : ", dv.Img)
+	fmt.Println("new : ", nm.Img)
+	fmt.Println("old : ", m.Img)
 
-	if ndv.Img != dv.Img || ndv.Img == "" {
+	if nm.Img != m.Img || nm.Img == "" {
 		fmt.Println("Image Not Math")
 		// Source
 		file, err := c.FormFile("img")
@@ -152,14 +152,14 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 		}
 		defer dst.Close()
 
-		ndv.Img = imgNewName
+		nm.Img = imgNewName
 
 		// Copy
 		if _, err = io.Copy(dst, src); err != nil {
 			return err
 		}
 
-		imgName := dv.Img
+		imgName := m.Img
 		if imgName != "" {
 			fmt.Print("image remove empty")
 			filePath = "/app/mac/" + imgName
@@ -173,34 +173,34 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	}
 
 	// Validation
-	if dv.Name == "" || dv.Serial == "" || dv.Spec == "" {
+	if m.Name == "" || m.Serial == "" || m.Spec == "" {
 		return &echo.HTTPError{
 			Code:    http.StatusBadRequest,
 			Message: "invalid to or message fields",
 		}
 	}
 
-	// Update device in database
-	if err = db.DB("mac_odds_team").C("mac").Update(bson.M{"_id": id}, &ndv); err != nil {
+	// Update mac in database
+	if err = db.DB("mac_odds_team").C("mac").Update(bson.M{"_id": id}, &nm); err != nil {
 		return
 	}
 
-	return c.JSON(http.StatusOK, &ndv)
+	return c.JSON(http.StatusOK, &nm)
 }
 
-// RemoveDevice is
+// RemoveMac is
 func (h *Handler) RemoveMac(c echo.Context) (err error) {
-	dv := model.Device{}
+	m := model.Mac{}
 	id := bson.ObjectIdHex(c.Param("id"))
 
 	db := h.DB.Clone()
 	defer db.Close()
 
-	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&dv); err != nil {
+	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&m); err != nil {
 		return
 	}
 
-	imgName := dv.Img
+	imgName := m.Img
 	if imgName != "" {
 
 		filePath := "/app/mac/" + imgName
@@ -211,7 +211,7 @@ func (h *Handler) RemoveMac(c echo.Context) (err error) {
 			return err
 		}
 	}
-	// Remove device in DB
+	// Remove mac in DB
 	if err = db.DB("mac_odds_team").C("mac").RemoveId(id); err != nil {
 		return
 	}

@@ -24,22 +24,22 @@ const (
 	individual = "individual"
 )
 
-// IsAdmin is
+// IsAdmin return admin role of a user
 func (u *User) IsAdmin() bool {
 	return u.Role == admin
 }
 
-// GetName is
+// GetName return name  of a user
 func (u *User) GetName() string {
 	return u.Name
 }
 
-// GetEmail is
+// GetEmail return email of a user
 func (u *User) GetEmail() string {
 	return u.Email
 }
 
-// GetImgProfile is
+// GetImgProfile image profile of a user
 func (u *User) GetImgProfile() string {
 	return u.ImgProfile
 }
