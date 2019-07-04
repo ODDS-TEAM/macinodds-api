@@ -11,11 +11,11 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo"
-	model "gitlab.odds.team/internship/macinodds-api/models"
+	model "gitlab.odds.team/internship/macinodds-api/model"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// GetMac is
+// GetMac show a list of all Mac and sorted by status and last update time.
 func (h *Handler) GetMac(c echo.Context) (err error) {
 	m := []*model.Mac{}
 
@@ -29,10 +29,10 @@ func (h *Handler) GetMac(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, m)
 }
 
-// GetMacByID is a function of >>
+// GetMacByID show the Mac by ID.
 func (h *Handler) GetMacByID(c echo.Context) (err error) {
-	m := model.Mac{}
 	id := bson.ObjectIdHex(c.Param("id"))
+	m := model.Mac{}
 
 	db := h.DB.Clone()
 	defer db.Close()
@@ -44,15 +44,15 @@ func (h *Handler) GetMacByID(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, m)
 }
 
-// CreateMac is
+// CreateMac create a Mac into the database.
 func (h *Handler) CreateMac(c echo.Context) (err error) {
-	// Create
 	m := &model.Mac{
 		ID:         bson.NewObjectId(),
 		LastUpdate: time.Now(),
 	}
+
 	if err = c.Bind(m); err != nil {
-		return err
+		return
 	}
 
 	// Validate
@@ -93,7 +93,7 @@ func (h *Handler) CreateMac(c echo.Context) (err error) {
 	db := h.DB.Clone()
 	defer db.Close()
 
-	// Save mac in database
+	// Save Mac in database
 	if err = db.DB("mac_odds_team").C("mac").Insert(&m); err != nil {
 		return err
 	}
@@ -101,7 +101,7 @@ func (h *Handler) CreateMac(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, m)
 }
 
-// UpdateMac is
+// UpdateMac update Mac that has been modified.
 func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	id := bson.ObjectIdHex(c.Param("id"))
 	nm := &model.Mac{
@@ -114,6 +114,7 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	}
 
 	m := &model.Mac{}
+
 	db := h.DB.Clone()
 	defer db.Close()
 
@@ -180,7 +181,7 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 		}
 	}
 
-	// Update mac in database
+	// Update Mac in database
 	if err = db.DB("mac_odds_team").C("mac").Update(bson.M{"_id": id}, &nm); err != nil {
 		return
 	}
@@ -188,10 +189,10 @@ func (h *Handler) UpdateMac(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &nm)
 }
 
-// RemoveMac is
+// RemoveMac remove the Mac's data.
 func (h *Handler) RemoveMac(c echo.Context) (err error) {
-	m := model.Mac{}
 	id := bson.ObjectIdHex(c.Param("id"))
+	m := model.Mac{}
 
 	db := h.DB.Clone()
 	defer db.Close()
@@ -200,21 +201,20 @@ func (h *Handler) RemoveMac(c echo.Context) (err error) {
 		return
 	}
 
+	// Remove image in Storage
 	imgName := m.Img
 	if imgName != "" {
-
 		filePath := "/app/mac/" + imgName
-		log.Println(filePath)
 
-		// Remove image in Storage
-		if err := os.Remove(filePath); err != nil {
-			return err
+		if err = os.Remove(filePath); err != nil {
+			return
 		}
 	}
-	// Remove mac in DB
+
+	// Remove Mac in database
 	if err = db.DB("mac_odds_team").C("mac").RemoveId(id); err != nil {
 		return
 	}
 
-	return c.JSON(http.StatusOK, err)
+	return c.JSON(http.StatusOK, "the mac deleted successfully")
 }
