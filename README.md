@@ -43,14 +43,12 @@ API url : ``139.5.146.213:1323``
 
 ```
 	e.GET("/", api.GetWelcome)
-	e.POST("/signin", api.SignIn)
 
 	m := e.Group("/mac")
 	m.GET("", api.GetMac)
 	m.GET("/:id", api.GetMacByID)
+	
 	m.POST("", api.CreateMac)
 	m.PUT("/:id", api.UpdateMac)
 	m.DELETE("/:id", api.RemoveMac)
-
-	e.DELETE("/db/:id", api.RemoveMacInDB)
 ```
