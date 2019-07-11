@@ -1,0 +1,52 @@
+[
+  {
+    "_id": "5d25038577a26e3df3f6eea1",
+    "role": "admin",
+    "name": "Sanders Melendez",
+    "email": "example@odds.team",
+    "imgProfile": "http://clipart-library.com/images/BTaroLj5c.png",
+    "slackAccount": "@slackexample",
+    "tel": "0175442547",
+    "createAt": "2019-05-30T09:00:00.000Z"
+  },
+  {
+    "_id": "5d250385cbdb06abb4574eef",
+    "role": "individuel",
+    "name": "Christie Kirk",
+    "email": "example@odds.team",
+    "imgProfile": "http://clipart-library.com/images/kTMKzGyMc.jpg",
+    "slackAccount": "@slackexample",
+    "tel": "08804312050",
+    "createAt": "2019-05-30T09:00:00.000Z"
+  },
+  {
+    "_id": "5d250385ad18c1db3bcb8f79",
+    "role": "individuel",
+    "name": "Nannie Quinn",
+    "email": "example@odds.team",
+    "imgProfile": "http://clipart-library.com/images/rTnr6L6yc.jpg",
+    "slackAccount": "@slackexample",
+    "tel": "0235902524",
+    "createAt": "2019-05-30T09:00:00.000Z"
+  },
+  {
+    "_id": "5d250385a67b86e4230cd5d5",
+    "role": "individuel",
+    "name": "Clements Barrera",
+    "email": "example@odds.team",
+    "imgProfile": "http://clipart-library.com/images/8cxrR5BEi.jpg",
+    "slackAccount": "@slackexample",
+    "tel": "0975213263",
+    "createAt": "2019-05-30T09:00:00.000Z"
+  },
+  {
+    "_id": "5d250385aa920601650f984d",
+    "role": "individuel",
+    "name": "Odom Hardy",
+    "email": "example@odds.team",
+    "imgProfile": "http://clipart-library.com/images/kTKozG4Mc.jpg",
+    "slackAccount": "@slackexample",
+    "tel": "0254202249",
+    "createAt": "2019-05-30T09:00:00.000Z"
+  }
+]
