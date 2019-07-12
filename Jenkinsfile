@@ -33,7 +33,6 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
-                sh '/bin/false'
                 sshPublisher(
                     publishers:
                      [
@@ -65,13 +64,25 @@ pipeline {
     }
     post {
         success {
-            slackSend iconEmoji: '🙆🏻‍♂️', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+            slackSend teamDomain: 'for-odds-team', 
+                tokenCredentialId: 'slack-for-odds-team', 
+                username: 'admin', 
+                color: "good", 
+                message: "${buildStatus}: Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} was successful 😀 (<${env.BUILD_URL}|Open>)"
         }
         failure {
-            slackSend iconEmoji: '🙆🏻‍♂️', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed"
+            slackSend teamDomain: 'for-odds-team', 
+                tokenCredentialId: 'slack-for-odds-team', 
+                username: 'admin', 
+                color: "danger", 
+                message: "Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} was failed 🙁 (<${env.BUILD_URL}|Open>)"
         }
         unstable {
-            slackSend iconEmoji: '🙆🏻‍♂️', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
+            slackSend teamDomain: 'for-odds-team', 
+                tokenCredentialId: 'slack-for-odds-team', 
+                username: 'admin', 
+                color: "warning", 
+                message: "Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} was unstable 😕 (<${env.BUILD_URL}|Open>)"
         }
     }
 }
