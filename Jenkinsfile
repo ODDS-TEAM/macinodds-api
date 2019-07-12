@@ -62,4 +62,15 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            slackSend iconEmoji: '🙆🏻‍♂️', message: '', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+        }
+        failure {
+            slackSend iconEmoji: '🙆🏻‍♂️', message: '', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed"
+        }
+        unstable {
+            slackSend iconEmoji: '🙆🏻‍♂️', message: '', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
+        }
+    }
 }
