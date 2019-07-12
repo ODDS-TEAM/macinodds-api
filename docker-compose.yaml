@@ -6,4 +6,6 @@ services:
     ports:
       - 1323:1323
     volumes:
-      - /home/nc-user/images:/app/mac
+      - /home/nc-user/images:/app/mac  
+    env_file:
+      - dev.env
