@@ -51,7 +51,7 @@ pipeline {
                                     remoteDirectory: 'api', 
                                     remoteDirectorySDF: false, 
                                     removePrefix: '', 
-                                    sourceFiles: 'docker-compose.yaml')
+                                    sourceFiles: 'docker-compose.yaml, dev.env')
                             ], 
                             usePromotionTimestamp: false, 
                             useWorkspaceInPromotion: false, 
