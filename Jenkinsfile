@@ -33,6 +33,7 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
+                sh '/bin/false'
                 sshPublisher(
                     publishers:
                      [
@@ -64,7 +65,7 @@ pipeline {
     }
     post {
         success {
-            slackSend iconEmoji: '🙆🏻‍♂️', message: '', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+            slackSend iconEmoji: '🙆🏻‍♂️', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
         }
         failure {
             slackSend iconEmoji: '🙆🏻‍♂️', teamDomain: 'for-odds-team', tokenCredentialId: 'slack-for-odds-team', username: 'admin', color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed"
