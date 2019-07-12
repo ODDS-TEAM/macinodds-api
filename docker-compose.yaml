@@ -3,6 +3,9 @@ services:
   api:
     image: registry.odds.team/internship/macinodds-api:${BUILD_NUMBER}
     container_name: 'macinodds-api'
+    networks:
+      - macinodds-web
+      - macinodds-db
     ports:
       - 1323:1323
     volumes:
