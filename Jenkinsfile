@@ -42,13 +42,13 @@ pipeline {
                                  sshTransfer(
                                     cleanRemote: false, 
                                     excludes: '', 
-                                    execCommand: 'BUILD_NUMBER=${BUILD_NUMBER} docker-compose up -d', 
+                                    execCommand: 'BUILD_NUMBER=${BUILD_NUMBER} docker-compose -f api/docker-compose.yaml up -d', 
                                     execTimeout: 120000, 
                                     flatten: false,
                                     makeEmptyDirs: false, 
                                     noDefaultExcludes: false, 
                                     patternSeparator: '[, ]+', 
-                                    remoteDirectory: '', 
+                                    remoteDirectory: 'api', 
                                     remoteDirectorySDF: false, 
                                     removePrefix: '', 
                                     sourceFiles: 'docker-compose.yaml')
