@@ -23,15 +23,42 @@ pipeline {
         stage ('Push') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: credential_id, url: registry) {
-                        to_push.push()
+                    withDockerRegistry(
+                        credentialsId: credential_id, 
+                        url: registry) {
+                            to_push.push()
                     }
                 }
             }
         }
         stage ('Deploy') {
             steps {
-                sshPublisher(publishers: [sshPublisherDesc(configName: 'macinodds.tk', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'docker-compose up -d', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'docker-compose.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                sshPublisher(
+                    publishers:
+                     [
+                         sshPublisherDesc(
+                             configName: 'macinodds.tk', 
+                             transfers: [
+                                 sshTransfer(
+                                    cleanRemote: false, 
+                                    excludes: '', 
+                                    execCommand: 'BUILD_NUMBER=${BUILD_NUMBER} docker-compose up -d', 
+                                    execTimeout: 120000, 
+                                    flatten: false,
+                                    makeEmptyDirs: false, 
+                                    noDefaultExcludes: false, 
+                                    patternSeparator: '[, ]+', 
+                                    remoteDirectory: '', 
+                                    remoteDirectorySDF: false, 
+                                    removePrefix: '', 
+                                    sourceFiles: 'docker-compose.yaml')
+                            ], 
+                            usePromotionTimestamp: false, 
+                            useWorkspaceInPromotion: false, 
+                            verbose: false
+                        )
+                    ]
+                )
             }
         }
     }
