@@ -68,7 +68,7 @@ pipeline {
                 tokenCredentialId: 'slack-for-odds-team', 
                 username: 'admin', 
                 color: "good", 
-                message: "${buildStatus}: Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} was successful 😀 (<${env.BUILD_URL}|Open>)"
+                message: "Job: ${env.JOB_NAME} #${env.BUILD_NUMBER} was successful 😀 (<${env.BUILD_URL}|Open>)"
         }
         failure {
             slackSend teamDomain: 'for-odds-team', 
