@@ -9,3 +9,8 @@ services:
       - /home/nc-user/images:/app/mac  
     env_file:
       - dev.env
+networks:
+  macinodds-web:
+    external: true
+  macinodds-db:
+    external: true
