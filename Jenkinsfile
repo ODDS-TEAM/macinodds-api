@@ -31,10 +31,7 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
-                sshPublisher(publishers: [sshPublisherDesc(configName: 'macinodds.tk', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''docker rm -f macinodds-api
-                docker login -u ${docker_user} -p ${docker_password} registry.odds.team 2>/dev/null
-                docker pull registry.odds.team/internship/macinodds-api:${BUILD_NUMBER}
-                docker run --name macinodds-api -p 1323:1323 -v /home/nc-user/images:/app/mac -d registry.odds.team/internship/macinodds-api:${BUILD_NUMBER}''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'macinodds.tk', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'docker-compose up -d', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'docker-compose.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             }
         }
     }
