@@ -6,17 +6,16 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Mac holds metadata about a macbook.
+// Device holds metadata about a macbook.
 type (
-	Mac struct {
+	Device struct {
 		ID         bson.ObjectId `json:"_id" bson:"_id,omitempty"`
 		Name       string        `json:"name" bson:"name"`
 		Serial     string        `json:"serial" bson:"serial"`
 		Spec       string        `json:"spec" bson:"spec"`
-		Status     bool          `json:"status" bson:"status"`
-		Holder     string        `json:"holder" bson:"holder"`
-		Tel        string        `json:"tel" bson:"tel"`
 		Img        string        `json:"img" bson:"img"`
+		Location   string        `json:"location" bson:"location"`
 		LastUpdate time.Time     `json:"lastUpdate" bson:"lastUpdate"`
+		Borrowing  bool          `json:"borrowing" bson:"borrowing"`
 	}
 )

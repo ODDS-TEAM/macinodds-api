@@ -1,4 +1,6 @@
-# Install Golang : OS X
+# API mac.odds.team
+
+## Install Golang : OS X
 
 ##### Install brew
 
@@ -22,7 +24,7 @@ $ brew install go
 
 ```
 $ go env
-$ go version
+$ go version (1.12.6)
 ```
 
 ##### Pull package
@@ -37,9 +39,16 @@ $ go get
 $ go run server.go
 ```
 
+##### Build & Run
+
+```
+$ go build server.go
+$ ./server
+```
+
 ##### API routes
 
-API url : ``139.5.146.213:1323``
+API url : [mac.odds.team/api](http://mac.odds.team/api)
 
 ```
 	e.GET("/", api.GetWelcome)

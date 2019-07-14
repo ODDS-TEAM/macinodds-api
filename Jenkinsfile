@@ -51,7 +51,7 @@ pipeline {
                                     remoteDirectory: 'api', 
                                     remoteDirectorySDF: false, 
                                     removePrefix: '', 
-                                    sourceFiles: 'docker-compose.yaml, dev.env')
+                                    sourceFiles: 'docker-compose.yaml, .env')
                             ], 
                             usePromotionTimestamp: false, 
                             useWorkspaceInPromotion: false, 
@@ -68,21 +68,21 @@ pipeline {
                 tokenCredentialId: 'slack-for-odds-team', 
                 username: 'admin', 
                 color: "good", 
-                message: "📌SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} 😀 (<${env.BUILD_URL}|Open>)"
+                message: "🎉SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} 😀 (<${env.BUILD_URL}|Open>)"
         }
         failure {
             slackSend teamDomain: 'for-odds-team', 
                 tokenCredentialId: 'slack-for-odds-team', 
                 username: 'admin', 
                 color: "danger", 
-                message: "📌FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} 🤢 (<${env.BUILD_URL}|Open>)"
+                message: "❗️FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} 🤢 (<${env.BUILD_URL}|Open>)"
         }
         unstable {
             slackSend teamDomain: 'for-odds-team', 
                 tokenCredentialId: 'slack-for-odds-team', 
                 username: 'admin', 
                 color: "warning", 
-                message: "📌UNSTABLE: ${env.JOB_NAME} #${env.BUILD_NUMBER} 😕 (<${env.BUILD_URL}|Open>)"
+                message: "⚠️UNSTABLE: ${env.JOB_NAME} #${env.BUILD_NUMBER} 😕 (<${env.BUILD_URL}|Open>)"
         }
     }
 }

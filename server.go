@@ -12,7 +12,7 @@ func main() {
 	// Use labstack/echo for rich routing.
 	// See https://echo.labstack.com/
 	e := echo.New()
-	c := config.Config()
+	s := config.Spec()
 
 	// Middleware
 	e.Logger.SetLevel(log.ERROR)
@@ -20,11 +20,21 @@ func main() {
 		middleware.CORS(),
 		middleware.Recover(),
 		middleware.Logger(),
+		// middleware.JWTWithConfig(middleware.JWTConfig{
+		// 	SigningKey: []byte(handler.Key),
+		// 	Skipper: func(c echo.Context) bool {
+		// 		// Skip authentication for and signup login requests
+		// 		if c.Path() == "/login" {
+		// 			return true
+		// 		}
+		// 		return false
+		// 	},
+		// }),
 	)
 
 	// Initialize routes
 	route.Init(e)
 
 	// Start server
-	e.Logger.Fatal(e.Start(c.APIPort))
+	e.Logger.Fatal(e.Start(s.APIPort))
 }
