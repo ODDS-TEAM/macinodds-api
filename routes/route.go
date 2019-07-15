@@ -48,8 +48,8 @@ func Init(e *echo.Echo) {
 	// m.GET("/users/:uid", api.GetMacsByUID)
 
 	m.POST("", a.CreateDevice)
-	// m.PUT("/:id", api.UpdateMac)
-	// m.DELETE("/:id", api.RemoveMac)
+	// m.PUT("/:id", a.UpdateDevice)
+	m.DELETE("/:id", a.RemoveDevice)
 	// m.POST("/users/:uid/borrow", api.BorrowMac)
 	// m.POST("/users/:uid/return", api.ReturnMac)
 

@@ -16,7 +16,7 @@ import (
 
 // CreateDevice create a device into the database.
 func (db *MongoDB) CreateDevice(c echo.Context) (err error) {
-	m, err := db.InsertDevice(c)
+	m, err := db.DBInsertDevice(c)
 	if err != nil {
 		return err
 	}
@@ -24,9 +24,43 @@ func (db *MongoDB) CreateDevice(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, m)
 }
 
+func (db *MongoDB) RemoveDevice(c echo.Context) (err error) {
+	db.DBRemoveDevice(c)
+
+	return c.JSON(http.StatusOK, "the mac deleted successfully")
+}
+
+func (db *MongoDB) DBRemoveDevice(c echo.Context) {
+	id := bson.ObjectIdHex(c.Param("id"))
+	m := model.Device{}
+
+	if err := db.DCol.Find(bson.M{"_id": id}).One(&m); err != nil {
+		return
+	}
+
+	// Remove File Mac in database
+	RemoveFile(&m)
+
+	if err := db.DCol.RemoveId(id); err != nil {
+		return
+	}
+}
+
+func RemoveFile(m *model.Device) {
+	// Remove image in Storage
+	imgName := m.Img
+	if imgName != "" {
+		filePath := "/app/mac/" + imgName
+
+		if err := os.Remove(filePath); err != nil {
+			return
+		}
+	}
+}
+
 // GetDevices show a list of all Devices and sorted by borrowing status and last update time.
 func (db *MongoDB) GetDevices(c echo.Context) (err error) {
-	m, err := db.FindDevices()
+	m, err := db.DBFindDevices()
 	if err != nil {
 		return err
 	}
@@ -34,7 +68,7 @@ func (db *MongoDB) GetDevices(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &m)
 }
 
-func (db *MongoDB) FindDevices() ([]*model.Device, error) { //ListBooks
+func (db *MongoDB) DBFindDevices() ([]*model.Device, error) { //ListBooks
 	m := []*model.Device{}
 	if err := db.DCol.Find(nil).Sort("borrowing", "-lastUpdate").All(&m); err != nil {
 		return nil, err
@@ -75,7 +109,7 @@ func CreateFile(p string, s multipart.File) {
 	}
 }
 
-func (db *MongoDB) InsertDevice(c echo.Context) (*model.Device, error) { //ListBooks
+func (db *MongoDB) DBInsertDevice(c echo.Context) (*model.Device, error) { //ListBooks
 	file, src := OpenFile(c)
 	imgName, filePath := GenImgID(file.Filename)
 	CreateFile(filePath, src)
@@ -98,51 +132,6 @@ func (db *MongoDB) InsertDevice(c echo.Context) (*model.Device, error) { //ListB
 
 	return m, nil
 }
-
-// Validate
-
-// Source
-// file, err := c.FormFile("img")
-// if err != nil {
-// 	return &echo.HTTPError{
-// 		Code:    http.StatusBadRequest,
-// 		Message: "invalid to or message fields",
-// 	}
-// }
-
-// src, err := file.Open()
-// if err != nil {
-// 	return err
-// }
-// defer src.Close()
-
-// random filename, retaining existing extension.
-// imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
-// log.Println(imgName)
-// filePath := "app/mac/" + imgName
-
-// dst, err := os.Create(filePath)
-// if err != nil {
-// 	return err
-// }
-// defer dst.Close()
-
-// m.Img = imgName
-
-// Copy
-// if _, err = io.Copy(dst, src); err != nil {
-// 	return err
-// }
-
-// db := h.DB.Clone()
-// defer db.Close()
-
-// Save Mac in database
-// if err = db.DB("mac_odds_team").C("mac").Insert(&m); err != nil {
-// 	return err
-// }
-
-// return c.JSON(http.StatusCreated, m)
 
 // GetMacByID show the Mac by ID.
 // func (h *HandlerDB) GetMacByID(c echo.Context) (err error) {
@@ -231,7 +220,7 @@ func (db *MongoDB) InsertDevice(c echo.Context) (*model.Device, error) { //ListB
 // 		}
 // 	}
 
-// Validation
+// 	Validation
 // 	if m.Name == "" || m.Serial == "" || m.Spec == "" {
 // 		return &echo.HTTPError{
 // 			Code:    http.StatusBadRequest,
@@ -245,34 +234,4 @@ func (db *MongoDB) InsertDevice(c echo.Context) (*model.Device, error) { //ListB
 // 	}
 
 // 	return c.JSON(http.StatusOK, &nm)
-// }
-
-// RemoveMac remove the Mac's data.
-// func (h *HandlerDB) RemoveMac(c echo.Context) (err error) {
-// 	id := bson.ObjectIdHex(c.Param("id"))
-// 	m := model.Mac{}
-
-// 	db := h.DB.Clone()
-// 	defer db.Close()
-
-// 	if err = db.DB("mac_odds_team").C("mac").Find(bson.M{"_id": id}).One(&m); err != nil {
-// 		return
-// 	}
-
-// 	// Remove image in Storage
-// 	imgName := m.Img
-// 	if imgName != "" {
-// 		filePath := "app/mac/" + imgName
-
-// 		if err = os.Remove(filePath); err != nil {
-// 			return
-// 		}
-// 	}
-
-// 	// Remove Mac in database
-// 	if err = db.DB("mac_odds_team").C("mac").RemoveId(id); err != nil {
-// 		return
-// 	}
-
-// 	return c.JSON(http.StatusOK, "the mac deleted successfully")
 // }
