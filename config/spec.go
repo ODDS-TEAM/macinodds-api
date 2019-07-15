@@ -20,7 +20,7 @@ type (
 
 // Spec retrieves the value of the environment variable named by the key.
 func Spec() *Specification {
-	godotenv.Load("/api/.env")
+	godotenv.Load("/home/nc-user/api/.env")
 
 	s := Specification{
 		DBHost:          os.Getenv("DB_HOST"),
