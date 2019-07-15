@@ -1,9 +1,14 @@
 package api
 
 import (
+	"io"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/labstack/echo"
 	model "gitlab.odds.team/internship/macinodds-api/model"
 	"gopkg.in/mgo.v2/bson"
@@ -38,10 +43,49 @@ func (db *MongoDB) FindDevices() ([]*model.Device, error) { //ListBooks
 	return m, nil
 }
 
+func GenImgID(f string) (string, string) {
+	i := uuid.Must(uuid.NewV4()).String() + path.Ext(f)
+	p := "/app/mac/" + i
+
+	return i, p
+}
+
+func OpenFile(c echo.Context) (*multipart.FileHeader, multipart.File) {
+	f, err := c.FormFile("img")
+	if err != nil {
+		return nil, nil
+	}
+	s, err := f.Open()
+	if err != nil {
+		return nil, nil
+	}
+	defer s.Close()
+
+	return f, s
+}
+
+func CreateFile(p string, s multipart.File) {
+	d, err := os.Create(p)
+	if err != nil {
+		return
+	}
+	defer d.Close()
+	if _, err = io.Copy(d, s); err != nil {
+		return
+	}
+}
+
 func (db *MongoDB) InsertDevice(c echo.Context) (*model.Device, error) { //ListBooks
+	file, src := OpenFile(c)
+	imgName, filePath := GenImgID(file.Filename)
+	CreateFile(filePath, src)
+
+	// create
 	m := &model.Device{
 		ID:         bson.NewObjectId(),
+		Img:        imgName,
 		LastUpdate: time.Now(),
+		Borrowing:  false,
 	}
 	if err := c.Bind(m); err != nil {
 		return nil, err
