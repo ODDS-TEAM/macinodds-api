@@ -9,9 +9,19 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// CreateDevice create a device into the database.
+func (db *MongoDB) CreateDevice(c echo.Context) (err error) {
+	m, err := db.InsertDevice(c)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusCreated, m)
+}
+
 // GetDevices show a list of all Devices and sorted by borrowing status and last update time.
 func (db *MongoDB) GetDevices(c echo.Context) (err error) {
-	m, err := db.GetDevicesDB()
+	m, err := db.FindDevices()
 	if err != nil {
 		return err
 	}
@@ -19,9 +29,8 @@ func (db *MongoDB) GetDevices(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &m)
 }
 
-// GetDevicesDB is
-func (db *MongoDB) GetDevicesDB() ([]*model.Device, error) { //ListBooks
-	var m []*model.Device
+func (db *MongoDB) FindDevices() ([]*model.Device, error) { //ListBooks
+	m := []*model.Device{}
 	if err := db.DCol.Find(nil).Sort("borrowing", "-lastUpdate").All(&m); err != nil {
 		return nil, err
 	}
@@ -29,63 +38,67 @@ func (db *MongoDB) GetDevicesDB() ([]*model.Device, error) { //ListBooks
 	return m, nil
 }
 
-// CreateDevice create a Mac into the database.
-func (db *MongoDB) CreateDevice(c echo.Context) (err error) {
+func (db *MongoDB) InsertDevice(c echo.Context) (*model.Device, error) { //ListBooks
 	m := &model.Device{
 		ID:         bson.NewObjectId(),
 		LastUpdate: time.Now(),
 	}
-	if err = c.Bind(m); err != nil {
-		return
+	if err := c.Bind(m); err != nil {
+		return nil, err
 	}
 
-	return c.JSON(http.StatusCreated, m)
+	// Save the device in database
+	if err := db.DCol.Insert(&m); err != nil {
+		return nil, err
+	}
 
-	// Validate
-
-	// Source
-	// file, err := c.FormFile("img")
-	// if err != nil {
-	// 	return &echo.HTTPError{
-	// 		Code:    http.StatusBadRequest,
-	// 		Message: "invalid to or message fields",
-	// 	}
-	// }
-
-	// src, err := file.Open()
-	// if err != nil {
-	// 	return err
-	// }
-	// defer src.Close()
-
-	// random filename, retaining existing extension.
-	// imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
-	// log.Println(imgName)
-	// filePath := "app/mac/" + imgName
-
-	// dst, err := os.Create(filePath)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer dst.Close()
-
-	// m.Img = imgName
-
-	// Copy
-	// if _, err = io.Copy(dst, src); err != nil {
-	// 	return err
-	// }
-
-	// db := h.DB.Clone()
-	// defer db.Close()
-
-	// Save Mac in database
-	// if err = db.DB("mac_odds_team").C("mac").Insert(&m); err != nil {
-	// 	return err
-	// }
-
-	// return c.JSON(http.StatusCreated, m)
+	return m, nil
 }
+
+// Validate
+
+// Source
+// file, err := c.FormFile("img")
+// if err != nil {
+// 	return &echo.HTTPError{
+// 		Code:    http.StatusBadRequest,
+// 		Message: "invalid to or message fields",
+// 	}
+// }
+
+// src, err := file.Open()
+// if err != nil {
+// 	return err
+// }
+// defer src.Close()
+
+// random filename, retaining existing extension.
+// imgName := uuid.Must(uuid.NewV4()).String() + path.Ext(file.Filename)
+// log.Println(imgName)
+// filePath := "app/mac/" + imgName
+
+// dst, err := os.Create(filePath)
+// if err != nil {
+// 	return err
+// }
+// defer dst.Close()
+
+// m.Img = imgName
+
+// Copy
+// if _, err = io.Copy(dst, src); err != nil {
+// 	return err
+// }
+
+// db := h.DB.Clone()
+// defer db.Close()
+
+// Save Mac in database
+// if err = db.DB("mac_odds_team").C("mac").Insert(&m); err != nil {
+// 	return err
+// }
+
+// return c.JSON(http.StatusCreated, m)
 
 // GetMacByID show the Mac by ID.
 // func (h *HandlerDB) GetMacByID(c echo.Context) (err error) {

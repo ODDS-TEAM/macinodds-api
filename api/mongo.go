@@ -21,8 +21,6 @@ type (
 func NewMongoDB() (*MongoDB, error) {
 	s := config.Spec()
 	conn, err := mgo.Dial("mac.odds.team:27017")
-	fmt.Println(s.APIPort)
-	fmt.Println(s.DBUsersCol)
 
 	if err != nil {
 		return nil, fmt.Errorf("mongo: could not dial: %v", err)
@@ -30,7 +28,7 @@ func NewMongoDB() (*MongoDB, error) {
 
 	return &MongoDB{
 		Conn: conn,
-		DCol: conn.DB("macOddsTeamDB").C("devices"),
+		DCol: conn.DB("macOddsTeamDB").C(s.DBDevicesCol),
 		UCol: conn.DB("macOddsTeamDB").C("users"),
 		BCol: conn.DB("macOddsTeamDB").C("borrowings"),
 	}, nil
