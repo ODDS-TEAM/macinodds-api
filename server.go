@@ -33,5 +33,5 @@ func main() {
 	route.Init(e)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1325"))
+	e.Logger.Fatal(e.Start(":1323"))
 }
