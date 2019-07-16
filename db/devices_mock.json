@@ -4,7 +4,7 @@
     "name": "Macbook Pro 2018",
     "serial": "5d25061ae2271f67bb0745e2",
     "spec": "Intel Core i5 2.3 GHz, Memory 4 GB 2133 MHz LPDDR3, HD 500 GB.",
-    "img": "img_01",
+    "img": "img_01.jpg",
     "location": "SCB site",
     "lastUpdate": ISODate("2019-06-28T09:00:00.000Z"),
     "borrowing": false
@@ -14,7 +14,7 @@
     "name": "Macbook Pro 2017",
     "serial": "5d25061a2955ab5f3a6c00bf",
     "spec": "Intel Core i7 2.4 GHz, Memory 4 GB 2133 MHz LPDDR3, HD 250 GB.",
-    "img": "img_02",
+    "img": "img_02.jpg",
     "location": "Workwize site",
     "lastUpdate": ISODate("2019-06-27T09:00:00.000Z"),
     "borrowing": true
@@ -24,7 +24,7 @@
     "name": "Macbook Pro 2018",
     "serial": "5d25061a6fd4231975259822",
     "spec": "Intel Core i7 2.2 GHz, Memory 4 GB 2133 MHz LPDDR3, HD 250 GB.",
-    "img": "img_03",
+    "img": "img_03.jpg",
     "location": "KTB site",
     "lastUpdate": ISODate("2019-06-29T09:00:00.000Z"),
     "borrowing": true
@@ -34,7 +34,7 @@
     "name": "Macbook Pro 2016",
     "serial": "5d25061a53287ae73f5560fe",
     "spec": "Intel Core i7 1.8 GHz, Memory 8 GB 2133 MHz LPDDR3, HD 500 GB.",
-    "img": "img_04",
+    "img": "img_04.jpg",
     "location": "Workwize site",
     "lastUpdate": ISODate("2019-06-30T09:00:00.000Z"),
     "borrowing": true
@@ -44,7 +44,7 @@
     "name": "Macbook Pro 2019",
     "serial": "5d25061ac371069bf50c9c92",
     "spec": "Intel Core i5 2.5 GHz, Memory 8 GB 2133 MHz LPDDR3, HD 500 GB.",
-    "img": "img_05",
+    "img": "img_05.jpg",
     "location": "Workwize site",
     "lastUpdate": ISODate("2019-07-07T09:00:00.000Z"),
     "borrowing": false
