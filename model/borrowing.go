@@ -3,7 +3,7 @@ package model
 import "gopkg.in/mgo.v2/bson"
 
 type (
-	// Borrowing is
+	// Borrowing holds metadata about a borrowing event.
 	Borrowing struct {
 		ID         bson.ObjectId `json:"_id"`
 		Date       string        `json:"date" bson:"date"`

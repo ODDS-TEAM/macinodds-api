@@ -6,8 +6,8 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// MongoDB holds metadata about session database and collections name.
 type (
-	// MongoDB is
 	MongoDB struct {
 		Conn *mgo.Session
 		DCol *mgo.Collection

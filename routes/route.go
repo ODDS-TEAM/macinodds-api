@@ -1,8 +1,6 @@
 package route
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo"
 	"gitlab.odds.team/internship/macinodds-api/api"
 )
@@ -23,11 +21,14 @@ func Init(e *echo.Echo) {
 	}
 
 	// Routes
-	// Respond to API health checks.
-	// Indicate the server is healthy.
-	e.GET("/_ah/health", func(c echo.Context) error {
-		return c.String(http.StatusOK, "mac.odds.team : ok!")
-	})
+	d := e.Group("/devices")
+	d.POST("", a.CreateDevice)
+	d.PUT("/:id", a.UpdateDevice)
+	d.DELETE("/:id", a.RemoveDevice)
+	d.GET("", a.GetDevices)
+
+	// b := e.Group("/borrowings")
+	// b.GET("", a.GetBorrowings)
 
 	// LOGIN
 	// e.POST("/loginGoogle", api.LoginGoogle)
@@ -41,15 +42,9 @@ func Init(e *echo.Echo) {
 	// h.GET("/users/:uid", api.GetHistoriesByUID)
 
 	// MAC
-	m := e.Group("/devices")
-	m.GET("", a.GetDevices)
-
 	// m.GET("/:id", api.GetMacsByID)
 	// m.GET("/users/:uid", api.GetMacsByUID)
 
-	m.POST("", a.CreateDevice)
-	// m.PUT("/:id", a.UpdateDevice)
-	m.DELETE("/:id", a.RemoveDevice)
 	// m.POST("/users/:uid/borrow", api.BorrowMac)
 	// m.POST("/users/:uid/return", api.ReturnMac)
 
