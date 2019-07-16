@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
@@ -22,12 +20,6 @@ func main() {
 		middleware.Recover(),
 		middleware.Logger(),
 	)
-
-	// Respond to API health checks.
-	// Indicate the server is healthy.
-	e.GET("/_ah/health", func(c echo.Context) error {
-		return c.String(http.StatusOK, "mac.odds.team : ok!")
-	})
 
 	// Initialize routes
 	route.Init(e)
