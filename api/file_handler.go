@@ -14,7 +14,7 @@ import (
 // GenImgID returns a randomly generated unique ID.
 func genImgID(f string) (string, string) {
 	id := uuid.Must(uuid.NewV4()).String() + path.Ext(f)
-	p := "/app/mac/" + id
+	p := "app/mac/" + id
 
 	return id, p
 }
@@ -50,7 +50,7 @@ func createFile(p string, s multipart.File) {
 // RemoveFile removes the named file or (empty) directory.
 func removeFile(m *model.Device) {
 	if id := m.Img; id != "" {
-		p := "/app/mac/" + id
+		p := "app/mac/" + id
 
 		// Remove image in Storage
 		if err := os.Remove(p); err != nil {
