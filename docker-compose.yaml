@@ -7,7 +7,7 @@ services:
       - macinodds-web
       - macinodds-db
     ports:
-      - 1323:1325
+      - 1325:1325
     volumes:
       - /home/nc-user/images:/app/mac  
     env_file:
