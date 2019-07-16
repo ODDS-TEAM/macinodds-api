@@ -10,8 +10,6 @@ services:
       - 1323:1323
     volumes:
       - /home/nc-user/images:/app/mac  
-    env_file:
-      - .env
 networks:
   macinodds-web:
     external: true
