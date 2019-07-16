@@ -5,6 +5,5 @@ RUN go get
 RUN go build -o server
 
 FROM ubuntu:latest
-COPY  --from=build /build/.env /app/.env
 COPY  --from=build /build/server /app/
 ENTRYPOINT /app/server
