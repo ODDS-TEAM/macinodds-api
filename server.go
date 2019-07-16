@@ -15,12 +15,6 @@ func main() {
 	e := echo.New()
 	// s := config.Spec()
 
-	// Respond to API health checks.
-	// Indicate the server is healthy.
-	e.GET("/_ah/health", func(c echo.Context) error {
-		return c.String(http.StatusOK, "mac.odds.team : ok!")
-	})
-
 	// Middleware
 	e.Logger.SetLevel(log.ERROR)
 	e.Use(
@@ -29,9 +23,15 @@ func main() {
 		middleware.Logger(),
 	)
 
+	// Respond to API health checks.
+	// Indicate the server is healthy.
+	e.GET("/_ah/health", func(c echo.Context) error {
+		return c.String(http.StatusOK, "mac.odds.team : ok!")
+	})
+
 	// Initialize routes
 	route.Init(e)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":1325"))
 }
