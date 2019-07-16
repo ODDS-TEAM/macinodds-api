@@ -6,8 +6,8 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// MongoDB holds metadata about session database and collections name.
 type (
-	// MongoDB is
 	MongoDB struct {
 		Conn *mgo.Session
 		DCol *mgo.Collection
@@ -18,7 +18,7 @@ type (
 
 // NewMongoDB creates a new macOddsTeamDB backed by a given Mongo server.
 func NewMongoDB() (*MongoDB, error) {
-	conn, err := mgo.Dial("mac.odds.team:27017")
+	conn, err := mgo.Dial("localhost:27018")
 
 	if err != nil {
 		return nil, fmt.Errorf("mongo: could not dial: %v", err)
