@@ -1,0 +1,77 @@
+[
+  {
+    "_id": ObjectId("5d2507a99802698845bc3b60"),
+    "date": "2019-06-30T09:00:00.000Z",
+    "activity": "borrow",
+    "macID": ObjectId("5d25061ae3d6558ed0d1ff63"),
+    "returnDate": "2019-11-01T09:00:00.000Z",
+    "memo": "",
+    "location": "",
+    "borrower": {
+      "_id": ObjectId("5d250385a67b86e4230cd5d5"),
+      "name": "Clements Barrera",
+      "slackAccount": "@slackexample",
+      "tel": "0975213263"
+    }
+  },
+  {
+    "_id": ObjectId("5d2507a968a23fa2c986c1b4"),
+    "date": "2019-06-29T09:00:00.000Z",
+    "activity": "borrow",
+    "macID": ObjectId("5d25061a95a8833b1fcd1d39"),
+    "returnDate": "2019-09-01T09:00:00.000Z",
+    "memo": "",
+    "location": "",
+    "borrower": {
+      "_id": ObjectId("5d250385cbdb06abb4574eef"),
+      "name": "Christie Kirk",
+      "slackAccount": "@slackexample",
+      "tel": "08804312050"
+    }
+  },
+  {
+    "_id": ObjectId("5d2507a9206107267f419714"),
+    "date": "2019-06-28T09:00:00.000Z",
+    "activity": "return",
+    "macID": ObjectId("5d25061ab6fcc2cb23a81534"),
+    "returnDate": "2019-06-28T09:00:00.000Z",
+    "memo": "Good Device and I love this.",
+    "location": "SCB site",
+    "borrower": {
+      "_id": ObjectId("5d250385cbdb06abb4574eef"),
+      "name": "Christie Kirk",
+      "slackAccount": "@slackexample",
+      "tel": "08804312050"
+    }
+  },
+  {
+    "_id": ObjectId("5d2507a93b847236aa0ca912"),
+    "date": "2019-06-27T09:00:00.000Z",
+    "activity": "borrow",
+    "macID": ObjectId("5d25061ac2704357cfe3bebf"),
+    "returnDate": "2019-08-27T09:00:00.000Z",
+    "memo": "",
+    "location": "",
+    "borrower": {
+      "_id": ObjectId("5d250385ad18c1db3bcb8f79"),
+      "name": "Nannie Quinn",
+      "slackAccount": "@slackexample",
+      "tel": "0235902524"
+    }
+  },
+  {
+    "_id": ObjectId("5d2507a993c83deaeb997978"),
+    "date": "2019-06-26T09:00:00.000Z",
+    "activity": "borrow",
+    "macID": ObjectId("5d25061ab6fcc2cb23a81534"),
+    "returnDate": "2019-06-28T09:00:00.000Z",
+    "memo": "",
+    "location": "",
+    "borrower": {
+      "_id": ObjectId("5d250385cbdb06abb4574eef"),
+      "name": "Christie Kirk",
+      "slackAccount": "@slackexample",
+      "tel": "08804312050"
+    }
+  }
+]
