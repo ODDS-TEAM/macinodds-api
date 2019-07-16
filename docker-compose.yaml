@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   api:
-    image: registry.odds.team/internship/macinodds-api:${BUILD_NUMBER}
+    image: registry.odds.team/internship/macinodds-api:26
     container_name: 'macinodds-api'
     networks:
       - macinodds-web
