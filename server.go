@@ -6,7 +6,6 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
-	route "gitlab.odds.team/internship/macinodds-api/routes"
 )
 
 func main() {
@@ -28,7 +27,7 @@ func main() {
 	})
 
 	// Initialize routes
-	route.Init(e)
+	// route.Init(e)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
