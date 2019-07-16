@@ -1,11 +1,10 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
+	route "gitlab.odds.team/internship/macinodds-api/routes"
 )
 
 func main() {
@@ -22,13 +21,9 @@ func main() {
 		middleware.Logger(),
 	)
 
-	e.GET("/ok", func(c echo.Context) error {
-		return c.String(http.StatusOK, "mac.odds.team : ok!!!")
-	})
-
 	// Initialize routes
-	// route.Init(e)
+	route.Init(e)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1325"))
+	e.Logger.Fatal(e.Start(":1323"))
 }
