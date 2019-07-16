@@ -21,11 +21,14 @@ func Init(e *echo.Echo) {
 	}
 
 	// Routes
-	m := e.Group("/devices")
-	m.POST("", a.CreateDevice)
-	m.PUT("/:id", a.UpdateDevice)
-	m.DELETE("/:id", a.RemoveDevice)
-	m.GET("", a.GetDevices)
+	d := e.Group("/devices")
+	d.POST("", a.CreateDevice)
+	d.PUT("/:id", a.UpdateDevice)
+	d.DELETE("/:id", a.RemoveDevice)
+	d.GET("", a.GetDevices)
+
+	// b := e.Group("/borrowings")
+	// b.GET("", a.GetBorrowings)
 
 	// LOGIN
 	// e.POST("/loginGoogle", api.LoginGoogle)
