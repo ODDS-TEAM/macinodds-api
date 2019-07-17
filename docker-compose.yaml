@@ -7,11 +7,9 @@ services:
       - macinodds-web
       - macinodds-db
     ports:
-      - 1323:1323
+      - 1323:${API_PORT}
     volumes:
-      - /home/nc-user/images:/app/mac  
-    env_file:
-      - .env
+      - /home/nc-user/images:/app/mac
 networks:
   macinodds-web:
     external: true
