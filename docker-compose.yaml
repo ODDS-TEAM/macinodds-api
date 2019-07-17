@@ -7,7 +7,7 @@ services:
       - macinodds-web
       - macinodds-db
     ports:
-      - 1323:${API_PORT}
+      - 1323:1111
     volumes:
       - /home/nc-user/images:/app/mac
 networks:
