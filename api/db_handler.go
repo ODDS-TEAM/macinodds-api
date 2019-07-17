@@ -20,7 +20,7 @@ type (
 // NewMongoDB creates a new macOddsTeamDB backed by a given Mongo server.
 func NewMongoDB() (*MongoDB, error) {
 	s := config.Spec()
-	conn, err := mgo.Dial(s.DBHost)
+	conn, err := mgo.Dial("mac.odds.team:21707")
 
 	if err != nil {
 		return nil, fmt.Errorf("mongo: could not dial: %v", err)
