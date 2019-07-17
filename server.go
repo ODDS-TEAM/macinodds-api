@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
+	"gitlab.odds.team/internship/macinodds-api/config"
 	route "gitlab.odds.team/internship/macinodds-api/routes"
 )
 
@@ -13,7 +14,7 @@ func main() {
 	// Use labstack/echo for rich routing.
 	// See https://echo.labstack.com/
 	e := echo.New()
-	// s := config.Spec()
+	s := config.Spec()
 
 	// Middleware
 	e.Logger.SetLevel(log.ERROR)
@@ -33,5 +34,5 @@ func main() {
 	route.Init(e)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(s.APIPort))
 }
