@@ -21,36 +21,21 @@ func Init(e *echo.Echo) {
 	}
 
 	// Routes
+	e.POST("/login", a.LogIn)
+	e.POST("/register", a.Register)
+	e.POST("/logout", a.LogOut)
+
 	d := e.Group("/devices")
 	d.POST("", a.CreateDevice)
 	d.PUT("/:id", a.UpdateDevice)
 	d.DELETE("/:id", a.RemoveDevice)
+	d.POST(":id/borrow", a.BorrowDevice)
+	d.POST(":id/return", a.ReturnDevice)
+
 	d.GET("", a.GetDevices)
+	d.GET("/:id", a.GetDevicesByID)
 
-	// b := e.Group("/borrowings")
-	// b.GET("", a.GetBorrowings)
-
-	// LOGIN
-	// e.POST("/loginGoogle", api.LoginGoogle)
-	// e.POST("/register", api.Register)
-	// e.POST("/login", api.Login)
-	// e.POST("/logout", api.Logout)
-
-	// HISTORY
-	// h := e.Group("/histories")
-	// h.GET("", api.GetHistories)
-	// h.GET("/users/:uid", api.GetHistoriesByUID)
-
-	// MAC
-	// m.GET("/:id", api.GetMacsByID)
-	// m.GET("/users/:uid", api.GetMacsByUID)
-
-	// m.POST("/users/:uid/borrow", api.BorrowMac)
-	// m.POST("/users/:uid/return", api.ReturnMac)
-
-	// m.GET("/:id", api.GetMacByID)
-
-	// m.POST("", api.CreateMac)
-	// m.PUT("/:id", api.UpdateMac)
-	// m.DELETE("/:id", api.RemoveMac)
+	b := e.Group("/borrowings")
+	b.GET("", a.GetBorrowings)
+	b.GET("/users/:id", a.GetMyBorrowings)
 }
