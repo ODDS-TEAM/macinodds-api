@@ -8,13 +8,15 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo"
+	"gitlab.odds.team/internship/macinodds-api/config"
 	model "gitlab.odds.team/internship/macinodds-api/model"
 )
 
 // GenImgID returns a randomly generated unique ID.
 func genImgID(f string) (string, string) {
+	s := config.Spec()
 	id := uuid.Must(uuid.NewV4()).String() + path.Ext(f)
-	p := "app/mac/" + id
+	p := s.ImgPath + id
 
 	return id, p
 }
@@ -49,8 +51,9 @@ func createFile(p string, s multipart.File) {
 
 // RemoveFile removes the named file or (empty) directory.
 func removeFile(m *model.Device) {
+	s := config.Spec()
 	if id := m.Img; id != "" {
-		p := "app/mac/" + id
+		p := s.ImgPath + id
 
 		// Remove image in Storage
 		if err := os.Remove(p); err != nil {
