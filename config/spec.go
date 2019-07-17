@@ -14,6 +14,7 @@ type (
 		DBDevicesCol    string
 		DBUsersCol      string
 		DBBorrowingsCol string
+		ImgPath         string
 		APIPort         string
 	}
 )
@@ -28,6 +29,7 @@ func Spec() *Specification {
 		DBDevicesCol:    os.Getenv("DB_DEVICES_COL"),
 		DBUsersCol:      os.Getenv("DB_USERS_COL"),
 		DBBorrowingsCol: os.Getenv("DB_BORROWINGS_COL"),
+		ImgPath:         os.Getenv("IMG_PATH"),
 		APIPort:         os.Getenv("API_PORT"),
 	}
 
