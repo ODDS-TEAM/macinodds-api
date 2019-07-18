@@ -146,9 +146,16 @@ func (db *MongoDB) Register(c echo.Context) (err error) {
 	q := bson.M{
 		"email": u.Email,
 	}
-	// ch := bson.M{"$set": bson.M{json.Marshal(foo(&u)}}
+	ch := bson.M{
+		"$set": bson.M{
+			"name":         u.Name,
+			"imgProfile":   u.ImgProfile,
+			"slackAccount": u.SlackAccount,
+			"tel":          u.Tel,
+		},
+	}
 
-	if err := db.UCol.Update(q, &u); err != nil {
+	if err := db.UCol.Update(q, &ch); err != nil {
 		return err
 	}
 
