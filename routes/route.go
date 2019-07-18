@@ -22,7 +22,7 @@ func Init(e *echo.Echo) {
 
 	// Routes
 	e.POST("/login", a.LogIn)
-	e.POST("/register", a.Register)
+	e.PUT("/register", a.Register)
 	e.POST("/logout", a.LogOut)
 
 	d := e.Group("/devices")
