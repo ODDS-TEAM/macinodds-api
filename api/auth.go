@@ -138,7 +138,35 @@ func GetInfo(idToken string) (*oauth2.Tokeninfo, error) {
 }
 
 func (db *MongoDB) Register(c echo.Context) (err error) {
-	return c.JSON(http.StatusCreated, "ok")
+	u := &model.User{}
+	if err := c.Bind(u); err != nil {
+		return err
+	}
+
+	q := bson.M{
+		"email": u.Email,
+	}
+	// ch := bson.M{"$set": bson.M{json.Marshal(foo(&u)}}
+
+	if err := db.UCol.Update(q, &u); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, &u)
+}
+
+func (db *MongoDB) UpdateUser(tokeninfo *oauth2.Tokeninfo) *model.User {
+	u := &model.User{
+		ID:       bson.NewObjectId(),
+		Role:     "individual",
+		Email:    tokeninfo.Email,
+		CreateAt: time.Now(),
+	}
+	if err := db.UCol.Insert(&u); err != nil {
+		return nil
+	}
+
+	return u
 }
 
 func (db *MongoDB) LogOut(c echo.Context) (err error) {
