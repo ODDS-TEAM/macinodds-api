@@ -13,7 +13,7 @@ type (
 		Role         string        `json:"role" bson:"role"`
 		Name         string        `json:"name" bson:"name"`
 		Email        string        `json:"email" bson:"email"`
-		ImgProfile   string        `json:"imgProfile,omitempty" bson:"imgProfile"`
+		ImgProfile   string        `json:"imgProfile" bson:"imgProfile"`
 		SlackAccount string        `json:"slackAccount" bson:"slackAccount"`
 		Tel          string        `json:"tel" bson:"tel"`
 		CreateAt     time.Time     `json:"createAt" bson:"createAt"`
