@@ -115,12 +115,38 @@ func (db *MongoDB) removeDeviceDB(c echo.Context) *model.Device {
 	return &m
 }
 
-func (db *MongoDB) findDevicesDB() ([]*model.Device, error) {
-	m := []*model.Device{}
+func (db *MongoDB) findDevicesDB() ([]*model.DeviceList, error) {
+	m := []*model.DeviceList{}
 	// Find all device in database
-	if err := db.DCol.Find(nil).Sort("borrowing", "-lastUpdate").All(&m); err != nil {
+	pipe := []bson.M{
+		{
+			"$lookup": bson.M{
+				"from":         "borrowings",
+				"localField":   "_id",
+				"foreignField": "device._id",
+				"as":           "fromBorrowings",
+			},
+		},
+		// {
+		// 	"$replaceRoot": bson.M{
+		// 		"newRoot": bson.M{
+		// 			"devices":        "$$ROOT",
+		// 			"fromBorrowings": "$fromBorrowings",
+		// 		},
+		// 	},
+		// },
+		// {
+		// 	"$project": bson.M{"devices.fromBorrowings": 0},
+		// },
+	}
+
+	if err := db.DCol.Pipe(pipe).All(&m); err != nil {
 		return nil, err
 	}
+	log.Println(db.DCol.Pipe(pipe).All(&m))
+	// if err := db.DCol.Find(nil).Sort("borrowing", "-lastUpdate").All(&m); err != nil {
+	// 	return nil, err
+	// }
 
 	return m, nil
 }
