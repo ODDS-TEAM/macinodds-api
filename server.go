@@ -22,6 +22,16 @@ func main() {
 		middleware.CORS(),
 		middleware.Recover(),
 		middleware.Logger(),
+		middleware.JWTWithConfig(middleware.JWTConfig{
+			SigningKey: []byte("sMJuczqQPYzocl1s6SLj"),
+			Skipper: func(c echo.Context) bool {
+				// Skip authentication for and signup login requests
+				if c.Path() == "/login" {
+					return true
+				}
+				return false
+			},
+		}),
 	)
 
 	// Respond to API health checks.
