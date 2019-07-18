@@ -4,13 +4,13 @@ services:
     image: registry.odds.team/internship/macinodds-api:${BUILD_NUMBER}
     container_name: 'macinodds-api'
     environment:
-      API_PORT: :1323
-      DB_BORROWINGS_COL: borrowings
-      DB_DEVICES_COL: devices
-      DB_HOST: mac.odds.team:27017
-      DB_NAME: macOddsTeamDB
-      DB_USERS_COL: users
-      IMG_PATH: /app/mac/
+      - API_PORT
+      - DB_BORROWINGS_COL
+      - DB_DEVICES_COL
+      - DB_HOST
+      - DB_NAME
+      - DB_USERS_COL
+      - IMG_PATH
     networks:
       - macinodds-web
       - macinodds-db
