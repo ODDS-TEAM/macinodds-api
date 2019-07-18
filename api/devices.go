@@ -52,17 +52,66 @@ func (db *MongoDB) RemoveDevice(c echo.Context) (err error) {
 }
 
 // GetDevices show a list of all Devices and sorted by borrowing status and last update time.
-func (db *MongoDB) GetDevices(c echo.Context) (err error) {
-	m, err := db.findDevicesDB()
-	if err != nil {
-		return err
+func (db *MongoDB) GetDevices(c echo.Context) (err error) {	
+	lookBorrowings := bson.M{
+		"$lookup": bson.M{
+			"from": "borrowings",
+			"let":  bson.M{"id": "$_id"},
+			"pipeline": []interface{}{
+				bson.M{"$match": bson.M{"$expr": bson.M{"$eq": []interface{}{"$device._id", "$$id"}}}},
+				bson.M{"$sort": bson.M{"date": -1}},
+				bson.M{"$limit": 1},
+				bson.M{"$project": bson.M{"borrower": 1, "_id": 1, "returnDate": 1}},
+			},
+			"as": "borrower",
+		},
+	}
+	addFieldBorower := bson.M{
+		"$addFields": bson.M{
+			"borrower": bson.M{
+				"_id"	: 	bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower._id"			, 0}}, ""}},
+				"name":     bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower.name"			, 0}}, ""}},
+				"slack":    bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower.slackAccount"	, 0}}, ""}},
+				"tel":      bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower.tel"			, 0}}, ""}},
+			},
+			"returnDate": bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.returnDate"			, 0}}, ""}},
+
+		},
+	}
+	projectDeviceInfo := bson.M{
+		"$project": bson.M{
+			"_id": 			1,
+			"name": 		1, 
+			"serial": 		1, 
+			"spec": 		1, 
+			"img": 			1, 
+			"location": 	1, 
+			"lastUpdate": 	1, 
+			"borrowing": 	1,
+			"returnDate":	1,
+			"borrower": bson.M{
+				"$arrayElemAt": []interface{}{"$borrower", 0},
+			},
+		},
+	}
+	projectHideSubBorrowerInfo := bson.M{
+		"$project": bson.M{ 
+			"borrower.borrower": 0,
+			"borrower.returnDate": 0,
+		 },
 	}
 
-	return c.JSON(http.StatusOK, &m)
+	query := []bson.M{lookBorrowings, addFieldBorower,projectDeviceInfo,projectHideSubBorrowerInfo}
+	data := []interface{}{}
+	db.DCol.Pipe(query).All(&data)
+	return c.JSON(http.StatusCreated, &data)
 }
 
 func (db *MongoDB) GetDevicesByID(c echo.Context) (err error) {
-	return c.JSON(http.StatusCreated, "ok")
+	id := c.Param("id")
+	data := model.Device{}
+	db.DCol.FindId(bson.ObjectIdHex(id)).One(&data)
+	return c.JSON(http.StatusCreated, &data)
 }
 
 func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
