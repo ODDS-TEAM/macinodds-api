@@ -85,7 +85,7 @@ func genToken(user *model.User) (string, error) {
 func (db *MongoDB) CreateUser(tokeninfo *oauth2.Tokeninfo) *model.User {
 	u := &model.User{
 		ID:       bson.NewObjectId(),
-		Role:     "indevidual",
+		Role:     "individual",
 		Email:    tokeninfo.Email,
 		CreateAt: time.Now(),
 	}
