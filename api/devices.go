@@ -99,8 +99,13 @@ func (db *MongoDB) GetDevices(c echo.Context) (err error) {
 			"borrower.returnDate": 0,
 		},
 	}
+	sortDevice := bson.M{
+		"$sort": bson.M{
+			"borrowing": 1,
+		},
+	}
 
-	query := []bson.M{lookBorrowings, addFieldBorower, projectDeviceInfo, projectHideSubBorrowerInfo}
+	query := []bson.M{lookBorrowings, addFieldBorower, projectDeviceInfo, projectHideSubBorrowerInfo,sortDevice}
 	data := []interface{}{}
 	db.DCol.Pipe(query).All(&data)
 	return c.JSON(http.StatusOK, &data)
