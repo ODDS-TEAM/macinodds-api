@@ -113,14 +113,6 @@ func (db *MongoDB) GetDevicesByID(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &data)
 }
 
-func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
-	return c.JSON(http.StatusOK, "ok")
-}
-
-func (db *MongoDB) ReturnDevice(c echo.Context) (err error) {
-	return c.JSON(http.StatusOK, "ok")
-}
-
 func (db *MongoDB) insertDeviceDB(c echo.Context, i string) (*model.Device, error) {
 	m := &model.Device{
 		ID:         bson.NewObjectId(),
