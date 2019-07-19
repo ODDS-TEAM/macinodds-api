@@ -16,6 +16,7 @@ pipeline {
         stage ('Build') {
             steps {
                 script {
+                    sh "export"
                     to_push = docker.build(img)
                 }   
             }
