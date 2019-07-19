@@ -29,8 +29,8 @@ func Init(e *echo.Echo) {
 	d.POST("", a.CreateDevice)
 	d.PUT("/:id", a.UpdateDevice)
 	d.DELETE("/:id", a.RemoveDevice)
-	d.POST(":id/borrow", a.BorrowDevice)
-	d.POST(":id/return", a.ReturnDevice)
+	d.POST("/:id/borrow", a.BorrowDevice)
+	d.POST("/:id/return", a.ReturnDevice)
 
 	d.GET("", a.GetDevices)
 	d.GET("/:id", a.GetDevicesByID)
