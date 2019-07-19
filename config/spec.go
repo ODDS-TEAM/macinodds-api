@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -32,6 +33,6 @@ func Spec() *Specification {
 		ImgPath:         os.Getenv("IMG_PATH"),
 		APIPort:         os.Getenv("API_PORT"),
 	}
-
+	log.Println("test")
 	return &s
 }
