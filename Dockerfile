@@ -1,8 +1,11 @@
 FROM golang:1.12.5 as build
-COPY . /build
 WORKDIR /build
-RUN go get
-RUN go build -o server
+COPY go.mod /build
+COPY go.sum /build
+RUN go mod download
+COPY . /build
+ENV CGO_ENABLED=0
+RUN  go build -o server
 
 FROM ubuntu:latest
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
