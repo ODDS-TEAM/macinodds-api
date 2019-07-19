@@ -11,8 +11,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type returnDate struct {
-	returnDate string `json:"returnDate", bson:"returnDate`
+type ReturnDate struct {
+	ReturnDate string `json:"returnDate" bson:"returnDate"`
 }
 
 func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
@@ -37,7 +37,7 @@ func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	uid := claims["id"].(string)
-	qid := bson.ObjectIdHex("5d31568cc7aba7000603fcc2")
+	qid := bson.ObjectIdHex(uid)
 
 	u := &model.User{}
 	if err := db.UCol.FindId(qid).One(&u); err != nil {
@@ -47,16 +47,18 @@ func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
 	log.Println("uid", uid)
 	log.Println(&u)
 
-	r := &returnDate{}
-	if err := c.Bind(r); err != nil {
+	var r ReturnDate
+	if err := c.Bind(&r); err != nil {
 		return err
 	}
+	log.Print("Sivaroot R", r)
+	t, err := time.Parse(time.RFC3339, r.ReturnDate)
 
 	b := &model.Borrowing{
 		ID:         bson.NewObjectId(),
 		Date:       time.Now(),
 		Activity:   "borrow",
-		ReturnDate: time.Now(), // <<<<
+		ReturnDate: t, 			// <<<<
 		Memo:       "",         // <<<
 		Location:   "",         // <<<
 		Device: model.DeviceBorrow{
@@ -69,13 +71,12 @@ func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
 		},
 	}
 
-	log.Println("time", time.Now())
 
 	if err := db.BCol.Insert(b); err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, r.returnDate)
+	return c.JSON(http.StatusOK, b)
 }
 
 func (db *MongoDB) ReturnDevice(c echo.Context) (err error) {
