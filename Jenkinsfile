@@ -42,7 +42,7 @@ pipeline {
                                  sshTransfer(
                                     cleanRemote: false, 
                                     excludes: '', 
-                                    execCommand: 'cd api && BUILD_NUMBER=${BUILD_NUMBER} reload.sh', 
+                                    execCommand: 'BUILD_NUMBER=${BUILD_NUMBER} ./reload.sh', 
                                     execTimeout: 120000, 
                                     flatten: false,
                                     makeEmptyDirs: false, 
