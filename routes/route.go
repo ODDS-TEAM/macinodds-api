@@ -23,7 +23,7 @@ func Init(e *echo.Echo) {
 	// Routes
 	// Authentication.
 	e.POST("/login", a.LogIn)
-	e.PUT("/register", a.Register)
+	e.PATCH("/register", a.Register)
 	e.POST("/logout", a.LogOut)
 
 	// Manage Devices.
