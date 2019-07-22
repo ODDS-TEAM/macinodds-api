@@ -1,2 +1,9 @@
 .DS_store
 /db
+
+# image files
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+*.png
