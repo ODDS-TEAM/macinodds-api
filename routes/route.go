@@ -21,21 +21,28 @@ func Init(e *echo.Echo) {
 	}
 
 	// Routes
+	// Authentication.
 	e.POST("/login", a.LogIn)
 	e.PUT("/register", a.Register)
 	e.POST("/logout", a.LogOut)
 
+	// Manage Devices.
 	d := e.Group("/devices")
 	d.POST("", a.CreateDevice)
 	d.PUT("/:id", a.UpdateDevice)
 	d.DELETE("/:id", a.RemoveDevice)
-	d.POST("/:id/borrow", a.BorrowDevice)
-	d.POST("/:id/return", a.ReturnDevice)
-
 	d.GET("", a.GetDevices)
 	d.GET("/:id", a.GetDevicesByID)
+	// d.GET("/users/:uid", a.GetMyDevice)
 
+	// Borrowings events.
 	b := e.Group("/borrowings")
 	b.GET("", a.GetBorrowings)
 	b.GET("/users/:id", a.GetMyBorrowings)
+
+	// Borrow and return Device.
+	// d.POST("/borrow/devices/:id", a.BorrowDevice)
+	// d.POST("/return/devices/:id", a.ReturnDevice)
+	d.POST("/:id/borrow", a.BorrowDevice)
+	d.POST("/:id/return", a.ReturnDevice)
 }
