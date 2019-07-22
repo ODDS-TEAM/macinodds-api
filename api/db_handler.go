@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 
 	"gitlab.odds.team/internship/macinodds-api/config"
 	"gopkg.in/mgo.v2"
@@ -21,9 +20,7 @@ type (
 // NewMongoDB creates a new macOddsTeamDB backed by a given Mongo server.
 func NewMongoDB() (*MongoDB, error) {
 	s := config.Spec()
-	log.Println(s.DBHost + "<<<")
 	conn, err := mgo.Dial(s.DBHost)
-	log.Println(s.DBHost + ">>>")
 
 	if err != nil {
 		return nil, fmt.Errorf("mongo: could not dial: %v", err)
