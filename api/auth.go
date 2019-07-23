@@ -110,6 +110,7 @@ func genToken(user *model.User) (string, error) {
 			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
 		},
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tok, err := token.SignedString(
 		[]byte("sMJuczqQPYzocl1s6SLj"),
