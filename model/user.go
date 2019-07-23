@@ -9,38 +9,13 @@ import (
 // User holds metadata about a user.
 type (
 	User struct {
-		ID           bson.ObjectId `json:"_id" bson:"_id,omitempty"`
+		ID           bson.ObjectId `json:"_id,omitempty" bson:"_id"`
 		Role         string        `json:"role" bson:"role"`
 		Name         string        `json:"name" bson:"name"`
 		Email        string        `json:"email" bson:"email"`
 		ImgProfile   string        `json:"imgProfile" bson:"imgProfile"`
 		SlackAccount string        `json:"slackAccount" bson:"slackAccount"`
 		Tel          string        `json:"tel" bson:"tel"`
-		CreateAt     time.Time     `json:"createAt" bson:"createAt"`
+		CreateAt     time.Time     `json:"createAt,omitempty" bson:"createAt"`
 	}
 )
-
-const (
-	admin      = "admin"
-	individual = "individual"
-)
-
-// IsAdmin return admin role of a user
-func (u *User) IsAdmin() bool {
-	return u.Role == admin
-}
-
-// GetName return name  of a user
-func (u *User) GetName() string {
-	return u.Name
-}
-
-// GetEmail return email of a user
-func (u *User) GetEmail() string {
-	return u.Email
-}
-
-// GetImgProfile image profile of a user
-func (u *User) GetImgProfile() string {
-	return u.ImgProfile
-}
