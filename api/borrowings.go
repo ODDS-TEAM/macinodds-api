@@ -58,19 +58,16 @@ func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
 		ID:         bson.NewObjectId(),
 		Date:       time.Now(),
 		Activity:   "borrow",
-		ReturnDate: t, 			// <<<<
-		Memo:       "",         // <<<
-		Location:   "",         // <<<
-		Device: model.DeviceBorrow{
-			ID:   m.ID,
-			Name: m.Name,
+		ReturnDate: t,  // <<<<
+		Memo:       "", // <<<
+		Location:   "", // <<<
+		Device: model.Name{
+			ID: m.ID,
 		},
-		Borrower: model.Borrower{
-			ID:   u.ID,
-			Name: u.Name,
+		Borrower: model.Name{
+			ID: u.ID,
 		},
 	}
-
 
 	if err := db.BCol.Insert(b); err != nil {
 		return err
