@@ -1,8 +1,10 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"runtime"
 	"time"
 
 	"github.com/labstack/echo"
@@ -53,6 +55,7 @@ func (db *MongoDB) RemoveDevice(c echo.Context) (err error) {
 
 // GetDevices show a list of all Devices and sorted by borrowing status and last update time.
 func (db *MongoDB) GetDevices(c echo.Context) (err error) {
+	fmt.Printf("Number of Goroutines start: %d\n", runtime.NumGoroutine())
 	lookBorrowings := bson.M{
 		"$lookup": bson.M{
 			"from": "borrowings",
@@ -105,9 +108,10 @@ func (db *MongoDB) GetDevices(c echo.Context) (err error) {
 		},
 	}
 
-	query := []bson.M{lookBorrowings, addFieldBorower, projectDeviceInfo, projectHideSubBorrowerInfo,sortDevice}
+	query := []bson.M{lookBorrowings, addFieldBorower, projectDeviceInfo, projectHideSubBorrowerInfo, sortDevice}
 	data := []interface{}{}
 	db.DCol.Pipe(query).All(&data)
+	fmt.Printf("Number of Goroutines end: %d\n", runtime.NumGoroutine())
 	return c.JSON(http.StatusOK, &data)
 }
 
@@ -160,8 +164,8 @@ func (db *MongoDB) removeDeviceDB(c echo.Context) *model.Device {
 	return &m
 }
 
-func (db *MongoDB) findDevicesDB() ([]*model.DeviceList, error) {
-	m := []*model.DeviceList{}
+func (db *MongoDB) findDevicesDB() ([]*model.Device, error) {
+	m := []*model.Device{}
 	// Find all device in database
 	pipe := []bson.M{
 		{
