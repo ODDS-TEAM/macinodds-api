@@ -8,24 +8,31 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// FindUser is a function to finding the user by id
-func (db *MongoDB) FindUser(tokeninfo *oauth2.Tokeninfo) *model.User {
+// FindUser search and validation of user data.
+func (db *MongoDB) FindUser(tokeninfo *oauth2.Tokeninfo) (*model.User, string) {
 	u := &model.User{}
+	status := "new"
 	q := bson.M{
 		"email": tokeninfo.Email,
 	}
 	if err := db.UCol.Find(q).One(&u); err != nil {
-		return nil
+		return nil, status
 	}
 
-	return u
+	if u.Name == "" || u.SlackAccount == "" || u.Tel == "" || u.ImgProfile == "" {
+		status = "notComplete"
+	} else {
+		status = "exist"
+	}
+
+	return u, status
 }
 
-// CreateUser in database.
+// CreateUser created by ID and email in database.
 func (db *MongoDB) CreateUser(tokeninfo *oauth2.Tokeninfo) *model.User {
 	u := &model.User{
 		ID:       bson.NewObjectId(),
-		Role:     "individual",
+		Role:     "individual", // default user's role
 		Email:    tokeninfo.Email,
 		CreateAt: time.Now(),
 	}
@@ -36,8 +43,20 @@ func (db *MongoDB) CreateUser(tokeninfo *oauth2.Tokeninfo) *model.User {
 	return u
 }
 
-// UpdateUser to database
-func (db *MongoDB) UpdateUser(q bson.M, ch bson.M) {
+// UpdateUser or register information of user to database.
+func (db *MongoDB) UpdateUser(uid bson.ObjectId, u *model.User) {
+	q := bson.M{
+		"email": uid,
+	}
+	ch := bson.M{
+		"$set": bson.M{
+			"name":         u.Name,
+			"imgProfile":   u.ImgProfile,
+			"slackAccount": u.SlackAccount,
+			"tel":          u.Tel,
+		},
+	}
+
 	if err := db.UCol.Update(q, &ch); err != nil {
 		return
 	}
