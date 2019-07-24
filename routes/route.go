@@ -22,9 +22,9 @@ func Init(e *echo.Echo) {
 
 	// Routes
 	// Authentication.
-	e.POST("/login", a.LogIn)
+	e.POST("/login", a.Login)
 	e.PATCH("/register", a.Register)
-	e.POST("/logout", a.LogOut)
+	e.POST("/logout", a.Logout)
 
 	// Manage Devices.
 	d := e.Group("/devices")
@@ -41,8 +41,8 @@ func Init(e *echo.Echo) {
 	b.GET("/users/:id", a.GetMyBorrowings)
 
 	// Borrow and return Device.
-	// d.POST("/borrow/devices/:id", a.BorrowDevice)
-	// d.POST("/return/devices/:id", a.ReturnDevice)
-	d.POST("/:id/borrow", a.BorrowDevice)
-	d.POST("/:id/return", a.ReturnDevice)
+	d.POST("/borrow/devices/:id", a.BorrowDevice)
+	d.POST("/return/devices/:id", a.ReturnDevice)
+	// d.POST("/:id/borrow", a.BorrowDevice)
+	// d.POST("/:id/return", a.ReturnDevice)
 }
