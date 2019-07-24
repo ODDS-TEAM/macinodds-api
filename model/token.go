@@ -10,8 +10,8 @@ type TokenGoogle struct {
 	Token string `json:"token"`
 }
 
-// Token that is generated for the requested resource from api.
-type Token struct {
+// TokenRes that is generated for the requested resource from api.
+type TokenRes struct {
 	Token      string `json:"token"`
 	FirstLogin bool   `json:"firstLogin"`
 }
