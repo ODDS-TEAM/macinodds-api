@@ -32,6 +32,8 @@ func (db *MongoDB) CreateDevice(c echo.Context) (err error) {
 func (db *MongoDB) UpdateDevice(c echo.Context) (err error) {
 	id, newm, m := db.compareDevices(c)
 
+	// validate status if false <<<<
+
 	if newm.Img != m.Img || newm.Img == "" {
 		file, src, _ := openFile(c)
 		imgNewName, filePath := genImgID(file.Filename)
@@ -42,6 +44,8 @@ func (db *MongoDB) UpdateDevice(c echo.Context) (err error) {
 			removeFile(m)
 		}
 	}
+
+	newm.Borrower = model.Borrower{}
 	db.updateDeviceDB(id, newm)
 
 	return c.JSON(http.StatusOK, &newm)
