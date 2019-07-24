@@ -14,6 +14,8 @@ import (
 
 // CreateDevice create a device into the database.
 func (db *MongoDB) CreateDevice(c echo.Context) (err error) {
+	// validate data
+
 	file, src, _ := openFile(c)
 	imgName, filePath := genImgID(file.Filename)
 	createFile(filePath, src)
@@ -115,6 +117,7 @@ func (db *MongoDB) GetDevices(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &data)
 }
 
+// GetDevicesByID is a func of ,,,
 func (db *MongoDB) GetDevicesByID(c echo.Context) (err error) {
 	id := c.Param("id")
 	data := model.Device{}
@@ -132,6 +135,7 @@ func (db *MongoDB) insertDeviceDB(c echo.Context, i string) (*model.Device, erro
 	if err := c.Bind(m); err != nil {
 		return nil, err
 	}
+	m.Borrower = model.Borrower{}
 
 	// Insert the device in database
 	if err := db.DCol.Insert(&m); err != nil {
