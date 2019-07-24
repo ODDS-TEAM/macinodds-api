@@ -23,7 +23,7 @@ type (
 
 	// Borrower holds information about a borrower.
 	Borrower struct {
-		ID           bson.ObjectId `json:"_id,omitempty" bson:"_id"`
+		ID           bson.ObjectId `json:"_id,omitempty" bson:"_id,omitempty"`
 		Name         string        `json:"name,omitempty" bson:"name,omitempty"`
 		Email        string        `json:"email,omitempty" bson:"email,omitempty"`
 		SlackAccount string        `json:"slackAccount,omitempty" bson:"slackAccount,omitempty"`
