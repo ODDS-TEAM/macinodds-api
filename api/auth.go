@@ -14,10 +14,10 @@ import (
 
 const clientID = "15378607653-f9lfgsml8th6lf50jfq93v3v2f4vpkpr.apps.googleusercontent.com"
 
-// LogIn using jwt token of Google.
-func (db *MongoDB) LogIn(c echo.Context) (err error) {
-	var login model.TokenGoogle
-	if err := c.Bind(&login); err != nil {
+// Login using jwt token of Google.
+func (db *MongoDB) Login(c echo.Context) (err error) {
+	login := &model.TokenGoogle{}
+	if err := c.Bind(login); err != nil {
 		return err
 	}
 
@@ -26,56 +26,67 @@ func (db *MongoDB) LogIn(c echo.Context) (err error) {
 		return err
 	}
 
-	firstLogin := false
-	user := db.FindUser(tokenInfo)
-	if user == nil {
-		// Create a new user
-		user = db.CreateUser(tokenInfo)
-		firstLogin = true
-	}
+	user, firstLogin := db.CheckUser(tokenInfo)
 
-	tok, err := genToken(user)
+	token, err := genToken(user)
 	if err != nil {
 		return err
 	}
 
-	res := &model.Token{
-		Token:      tok,
+	res := &model.TokenRes{
+		Token:      token,
 		FirstLogin: firstLogin,
 	}
 
 	return c.JSON(http.StatusOK, res)
 }
 
-// Register user to Database
+// CheckUser detect the user in database and returns the user's status.
+func (db *MongoDB) CheckUser(tokenInfo *oauth2.Tokeninfo) (*model.User, bool) {
+	firstLogin := false
+	user, status := db.FindUser(tokenInfo)
+	if status == "new" {
+		// Create a new user to database
+		user = db.CreateUser(tokenInfo)
+		firstLogin = true
+	} else if status == "notComplete" {
+		firstLogin = true
+	}
+
+	return user, firstLogin
+}
+
+// Register the user to database.
 func (db *MongoDB) Register(c echo.Context) (err error) {
 	u := &model.User{}
 	if err := c.Bind(u); err != nil {
 		return err
 	}
 
-	q := bson.M{
-		"email": u.Email,
-	}
-	ch := bson.M{
-		"$set": bson.M{
-			"name":         u.Name,
-			"imgProfile":   u.ImgProfile,
-			"slackAccount": u.SlackAccount,
-			"tel":          u.Tel,
-		},
-	}
-
-	if err := db.UCol.Update(q, &ch); err != nil {
-		return err
-	}
+	uid := GetIDFromToken(c)
+	db.UpdateUser(uid, u)
 
 	return c.JSON(http.StatusOK, &u)
 }
 
-// LogOut user and blacklist token
-func (db *MongoDB) LogOut(c echo.Context) (err error) {
-	return c.JSON(http.StatusCreated, "ok")
+// Logout user and blacklist token
+func (db *MongoDB) Logout(c echo.Context) (err error) {
+	bl := &model.BlackList{}
+	if err := c.Bind(bl); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, &bl)
+}
+
+// GetIDFromToken return ID of user from jwt token.
+func GetIDFromToken(c echo.Context) bson.ObjectId {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	uid := claims["id"].(string)
+	id := bson.ObjectIdHex(uid)
+
+	return id
 }
 
 func verifyAudience(aud string) bool {
@@ -103,21 +114,23 @@ func getInfo(idToken string) (*oauth2.Tokeninfo, error) {
 }
 
 func genToken(user *model.User) (string, error) {
+	// Set custom claims
 	claims := &model.JwtCustomClaims{
 		user.ID,
 		user.Role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 		},
 	}
 
+	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tok, err := token.SignedString(
+	t, err := token.SignedString(
 		[]byte("sMJuczqQPYzocl1s6SLj"),
 	)
 	if err != nil {
 		return "", err
 	}
 
-	return tok, nil
+	return t, nil
 }
