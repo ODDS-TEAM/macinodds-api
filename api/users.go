@@ -46,7 +46,8 @@ func (db *MongoDB) CreateUser(tokeninfo *oauth2.Tokeninfo) *model.User {
 // UpdateUser or register information of user to database.
 func (db *MongoDB) UpdateUser(uid bson.ObjectId, u *model.User) {
 	q := bson.M{
-		"email": uid,
+		"_id":   uid,
+		"email": u.Email,
 	}
 	ch := bson.M{
 		"$set": bson.M{
