@@ -161,7 +161,7 @@ func (db *MongoDB) GetBorrowings(c echo.Context) (err error) {
 }
 
 func (db *MongoDB) GetMyBorrowings(c echo.Context) (err error) {
-	id := getID(c)
+	id := GetIDFromToken(c)
 	b := db.findBorrowingsDB(c, id)
 	return c.JSON(http.StatusCreated, b)
 }
