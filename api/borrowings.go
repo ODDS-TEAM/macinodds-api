@@ -167,18 +167,48 @@ func (db *MongoDB) GetMyBorrowings(c echo.Context) (err error) {
 }
 
 func (db *MongoDB) findBorrowingsDB(c echo.Context, id bson.ObjectId) []*model.Borrowing {
-	var q bson.M
-	e, _ := id.MarshalText()
-
-	if len(e) > 0 {
-		q = bson.M{"borrower._id": id}
-	} else {
-		q = nil
+	b := []*model.Borrowing{}
+	dLookup := bson.M{
+		"$lookup": bson.M{
+			"from":         "devices",
+			"localField":   "device._id",
+			"foreignField": "_id",
+			"as":           "device",
+		},
+	}
+	uLookup := bson.M{
+		"$lookup": bson.M{
+			"from":         "users",
+			"localField":   "borrower._id",
+			"foreignField": "_id",
+			"as":           "borrower",
+		},
+	}
+	dUnwind := bson.M{
+		"$unwind": bson.M{
+			"path":                       "$device",
+			"preserveNullAndEmptyArrays": true,
+		},
+	}
+	uUnwind := bson.M{
+		"$unwind": bson.M{
+			"path":                       "$borrower",
+			"preserveNullAndEmptyArrays": true,
+		},
 	}
 
-	b := []*model.Borrowing{}
+	q := []bson.M{dLookup, uLookup, dUnwind, uUnwind}
+	e, _ := id.MarshalText()
+	if len(e) > 0 {
+		match := bson.M{
+			"$match": bson.M{
+				"borrower._id": id,
+			},
+		}
+		q = []bson.M{match, dLookup, uLookup, dUnwind, uUnwind}
+	}
 
-	if err := db.BCol.Find(q).Sort("-date").All(&b); err != nil {
+	if err := db.BCol.Pipe(q).All(&b); err != nil {
 		return nil
 	}
 
