@@ -33,7 +33,7 @@ func Init(e *echo.Echo) {
 	d.DELETE("/:id", a.RemoveDevice)
 	d.GET("", a.GetDevices)
 	d.GET("/:id", a.GetDevicesByID)
-	// d.GET("/users/:uid", a.GetMyDevice)
+	d.GET("/users/:uid", a.GetMyDevice)
 
 	// Borrowings events.
 	b := e.Group("/borrowings")
