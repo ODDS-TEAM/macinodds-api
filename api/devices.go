@@ -59,32 +59,53 @@ func (db *MongoDB) RemoveDevice(c echo.Context) (err error) {
 
 // GetDevices show a list of all Devices and sorted by borrowing status and last update time.
 func (db *MongoDB) GetDevices(c echo.Context) (err error) {
+	d := db.PipeDevice(c, "")
+	return c.JSON(http.StatusOK, &d)
+}
+
+func (db *MongoDB) GetMyDevice(c echo.Context) (err error) {
+	uid := GetIDFromToken(c)
+	d := db.PipeDevice(c, uid)
+	return c.JSON(http.StatusOK, &d)
+}
+
+func (db *MongoDB) PipeDevice(c echo.Context, id bson.ObjectId) []*model.Device {
 	d := []*model.Device{}
-	q := []bson.M{
-		bson.M{
-			"$lookup": bson.M{
-				"from":         "users",
-				"localField":   "borrower._id",
-				"foreignField": "_id",
-				"as":           "borrower",
-			},
-		},
-		bson.M{
-			"$unwind": bson.M{
-				"path":                       "$borrower",
-				"preserveNullAndEmptyArrays": true,
-			},
-		},
-		bson.M{
-			"$sort": bson.M{
-				"borrowing":  1,
-				"lastUpdate": 1,
-			},
+	lookup := bson.M{
+		"$lookup": bson.M{
+			"from":         "users",
+			"localField":   "borrower._id",
+			"foreignField": "_id",
+			"as":           "borrower",
 		},
 	}
+	unwind := bson.M{
+		"$unwind": bson.M{
+			"path":                       "$borrower",
+			"preserveNullAndEmptyArrays": true,
+		},
+	}
+	sort := bson.M{
+		"$sort": bson.M{
+			"borrowing":  1,
+			"lastUpdate": 1,
+		},
+	}
+
+	q := []bson.M{lookup, unwind, sort}
+	e, _ := id.MarshalText()
+	if len(e) > 0 {
+		match := bson.M{
+			"$match": bson.M{
+				"borrower._id": id,
+			},
+		}
+		q = []bson.M{match, lookup, unwind, sort}
+	}
+
 	db.DCol.Pipe(q).All(&d)
 
-	return c.JSON(http.StatusOK, &d)
+	return d
 }
 
 // GetDevicesByID is a func of ,,,
