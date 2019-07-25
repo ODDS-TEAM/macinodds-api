@@ -1,10 +1,8 @@
 package api
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"runtime"
 	"time"
 
 	"github.com/labstack/echo"
@@ -61,64 +59,26 @@ func (db *MongoDB) RemoveDevice(c echo.Context) (err error) {
 
 // GetDevices show a list of all Devices and sorted by borrowing status and last update time.
 func (db *MongoDB) GetDevices(c echo.Context) (err error) {
-	fmt.Printf("Number of Goroutines start: %d\n", runtime.NumGoroutine())
-	lookBorrowings := bson.M{
-		"$lookup": bson.M{
-			"from": "borrowings",
-			"let":  bson.M{"id": "$_id"},
-			"pipeline": []interface{}{
-				bson.M{"$match": bson.M{"$expr": bson.M{"$eq": []interface{}{"$device._id", "$$id"}}}},
-				bson.M{"$sort": bson.M{"date": -1}},
-				bson.M{"$limit": 1},
-				bson.M{"$project": bson.M{"borrower": 1, "_id": 1, "returnDate": 1}},
+	d := []*model.Device{}
+	q := []bson.M{
+		bson.M{
+			"$lookup": bson.M{
+				"from":         "users",
+				"localField":   "borrower._id",
+				"foreignField": "_id",
+				"as":           "borrower",
 			},
-			"as": "borrower",
 		},
-	}
-	addFieldBorower := bson.M{
-		"$addFields": bson.M{
-			"borrower": bson.M{
-				"_id":   bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower._id", 0}}, ""}},
-				"name":  bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower.name", 0}}, ""}},
-				"slack": bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower.slackAccount", 0}}, ""}},
-				"tel":   bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.borrower.tel", 0}}, ""}},
-			},
-			"returnDate": bson.M{"$cond": []interface{}{bson.M{"$toBool": "$borrowing"}, bson.M{"$arrayElemAt": []interface{}{"$borrower.returnDate", 0}}, ""}},
-		},
-	}
-	projectDeviceInfo := bson.M{
-		"$project": bson.M{
-			"_id":        1,
-			"name":       1,
-			"serial":     1,
-			"spec":       1,
-			"img":        1,
-			"location":   1,
-			"lastUpdate": 1,
-			"borrowing":  1,
-			"returnDate": 1,
-			"borrower": bson.M{
-				"$arrayElemAt": []interface{}{"$borrower", 0},
+		bson.M{
+			"$unwind": bson.M{
+				"path":                       "$borrower",
+				"preserveNullAndEmptyArrays": true,
 			},
 		},
 	}
-	projectHideSubBorrowerInfo := bson.M{
-		"$project": bson.M{
-			"borrower.borrower":   0,
-			"borrower.returnDate": 0,
-		},
-	}
-	sortDevice := bson.M{
-		"$sort": bson.M{
-			"borrowing": 1,
-		},
-	}
+	db.DCol.Pipe(q).All(&d)
 
-	query := []bson.M{lookBorrowings, addFieldBorower, projectDeviceInfo, projectHideSubBorrowerInfo, sortDevice}
-	data := []interface{}{}
-	db.DCol.Pipe(query).All(&data)
-	fmt.Printf("Number of Goroutines end: %d\n", runtime.NumGoroutine())
-	return c.JSON(http.StatusOK, &data)
+	return c.JSON(http.StatusOK, &d)
 }
 
 // GetDevicesByID is a func of ,,,
