@@ -161,7 +161,7 @@ func (db *MongoDB) GetBorrowings(c echo.Context) (err error) {
 }
 
 func (db *MongoDB) GetMyBorrowings(c echo.Context) (err error) {
-	id := GetIDFromToken(c)
+	id := getID(c)
 	b := db.findBorrowingsDB(c, id)
 	return c.JSON(http.StatusCreated, b)
 }
@@ -205,7 +205,7 @@ func (db *MongoDB) findBorrowingsDB(c echo.Context, id bson.ObjectId) []*model.B
 				"borrower._id": id,
 			},
 		}
-		q = []bson.M{match, dLookup, uLookup, dUnwind, uUnwind}
+		q = []bson.M{dLookup, uLookup, match, dUnwind, uUnwind}
 	}
 
 	if err := db.BCol.Pipe(q).All(&b); err != nil {
