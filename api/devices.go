@@ -75,6 +75,12 @@ func (db *MongoDB) GetDevices(c echo.Context) (err error) {
 				"preserveNullAndEmptyArrays": true,
 			},
 		},
+		bson.M{
+			"$sort": bson.M{
+				"borrowing":  1,
+				"lastUpdate": 1,
+			},
+		},
 	}
 	db.DCol.Pipe(q).All(&d)
 
