@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -83,25 +84,74 @@ func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, "yeh")
+	return c.JSON(http.StatusOK, "Borrow!")
 }
 
+type (
+	// ReturnData is
+	ReturnData struct {
+		Memo     string `json:"memo" bson:"memo"`
+		Location string `json:"location" bson:"location"`
+	}
+)
+
+// ReturnDevice is
 func (db *MongoDB) ReturnDevice(c echo.Context) (err error) {
+	uid := GetIDFromToken(c)
 	id := getID(c)
+	// check mathcing user and device
 	q := bson.M{
+		"borrower._id": uid,
+		"_id":          id,
+		"borrowing":    true,
+	}
+	d := &model.Device{}
+	if err = db.DCol.Find(q).One(d); err != nil {
+		return c.JSON(http.StatusNotFound, "Not your device")
+	}
+
+	r := &ReturnData{}
+	if err := c.Bind(r); err != nil {
+		return err
+	}
+	defer log.Println("res", r)
+
+	// update data device
+	q2 := bson.M{
 		"_id": id,
 	}
 	ch := bson.M{
 		"$set": bson.M{
-			"borrowing": false,
+			"location":   r.Location,
+			"borrowing":  false,
+			"borrower":   bson.M{},
+			"returnDate": time.Time{},
+		},
+	}
+	if err := db.DCol.Update(q2, &ch); err != nil {
+		return err
+	}
+	// update borrowing database
+	b := &model.Borrowing{
+		ID:         bson.NewObjectId(),
+		Date:       time.Now(),
+		Activity:   "return",
+		ReturnDate: time.Now(), // <<<<
+		Memo:       r.Memo,     // <<<
+		Location:   r.Location, // <<<
+		Device: model.Name{
+			ID: id,
+		},
+		Borrower: model.Name{
+			ID: uid,
 		},
 	}
 
-	if err := db.DCol.Update(q, &ch); err != nil {
+	if err := db.BCol.Insert(b); err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, "Return "+id)
+	return c.JSON(http.StatusOK, "Return!")
 }
 
 func (db *MongoDB) GetBorrowings(c echo.Context) (err error) {
