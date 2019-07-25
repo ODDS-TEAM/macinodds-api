@@ -41,8 +41,6 @@ func Init(e *echo.Echo) {
 	b.GET("/users/:id", a.GetMyBorrowings)
 
 	// Borrow and return Device.
-	d.POST("/borrow/devices/:id", a.BorrowDevice)
-	d.POST("/return/devices/:id", a.ReturnDevice)
-	// d.POST("/:id/borrow", a.BorrowDevice)
-	// d.POST("/:id/return", a.ReturnDevice)
+	e.POST("/borrow/devices/:id", a.BorrowDevice)
+	e.POST("/return/devices/:id", a.ReturnDevice)
 }
