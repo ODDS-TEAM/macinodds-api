@@ -88,7 +88,7 @@ func (db *MongoDB) PipeDevice(c echo.Context, id bson.ObjectId) []*model.Device 
 	sort := bson.M{
 		"$sort": bson.M{
 			"borrowing":  1,
-			"lastUpdate": 1,
+			"lastUpdate": -1,
 		},
 	}
 
@@ -158,44 +158,6 @@ func (db *MongoDB) removeDeviceDB(c echo.Context) *model.Device {
 
 	return &m
 }
-
-func (db *MongoDB) findDevicesDB() ([]*model.Device, error) {
-	m := []*model.Device{}
-	// Find all device in database
-	pipe := []bson.M{
-		{
-			"$lookup": bson.M{
-				"from":         "borrowings",
-				"localField":   "_id",
-				"foreignField": "device._id",
-				"as":           "fromBorrowings",
-			},
-		},
-		// {
-		// 	"$replaceRoot": bson.M{
-		// 		"newRoot": bson.M{
-		// 			"devices":        "$$ROOT",
-		// 			"fromBorrowings": "$fromBorrowings",
-		// 		},
-		// 	},
-		// },
-		// {
-		// 	"$project": bson.M{"devices.fromBorrowings": 0},
-		// },
-	}
-
-	if err := db.DCol.Pipe(pipe).All(&m); err != nil {
-		return nil, err
-	}
-	log.Println(db.DCol.Pipe(pipe).All(&m))
-	// if err := db.DCol.Find(nil).Sort("borrowing", "-lastUpdate").All(&m); err != nil {
-	// 	return nil, err
-	// }
-
-	return m, nil
-}
-
-// find1
 
 func (db *MongoDB) compareDevices(c echo.Context) (bson.ObjectId, *model.Device, *model.Device) {
 	id := getID(c)
