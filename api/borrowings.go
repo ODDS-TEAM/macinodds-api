@@ -196,8 +196,13 @@ func (db *MongoDB) findBorrowingsDB(c echo.Context, id bson.ObjectId) []*model.B
 			"preserveNullAndEmptyArrays": true,
 		},
 	}
+	sort := bson.M{
+		"$sort": bson.M{
+			"date": -1,
+		},
+	}
 
-	q := []bson.M{dLookup, uLookup, dUnwind, uUnwind}
+	q := []bson.M{dLookup, uLookup, dUnwind, uUnwind, sort}
 	e, _ := id.MarshalText()
 	if len(e) > 0 {
 		match := bson.M{
@@ -205,7 +210,7 @@ func (db *MongoDB) findBorrowingsDB(c echo.Context, id bson.ObjectId) []*model.B
 				"borrower._id": id,
 			},
 		}
-		q = []bson.M{dLookup, uLookup, match, dUnwind, uUnwind}
+		q = []bson.M{dLookup, uLookup, match, dUnwind, uUnwind, sort}
 	}
 
 	if err := db.BCol.Pipe(q).All(&b); err != nil {
