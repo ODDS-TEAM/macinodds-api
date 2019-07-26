@@ -58,6 +58,7 @@ func (db *MongoDB) BorrowDevice(c echo.Context) (err error) {
 			"borrower": bson.M{
 				"_id": uid,
 			},
+			"lastUpdate": time.Now(),
 			"returnDate": t,
 		},
 	}
@@ -125,6 +126,7 @@ func (db *MongoDB) ReturnDevice(c echo.Context) (err error) {
 			"location":   r.Location,
 			"borrowing":  false,
 			"borrower":   bson.M{},
+			"lastUpdate": time.Now(),
 			"returnDate": time.Time{},
 		},
 	}
