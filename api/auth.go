@@ -75,12 +75,6 @@ func (db *MongoDB) Logout(c echo.Context) (err error) {
 	if err := c.Bind(bl); err != nil {
 		return err
 	}
-
-	
-	if err := db.BLCol.Insert(&bl); err != nil {
-		return err
-	}
-
 	return c.JSON(http.StatusOK, &bl)
 }
 
