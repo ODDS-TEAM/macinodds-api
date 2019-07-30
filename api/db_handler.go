@@ -14,6 +14,7 @@ type (
 		DCol *mgo.Collection
 		UCol *mgo.Collection
 		BCol *mgo.Collection
+		BLCol *mgo.Collection
 	}
 )
 
@@ -31,6 +32,7 @@ func NewMongoDB() (*MongoDB, error) {
 		DCol: conn.DB(s.DBName).C(s.DBDevicesCol),
 		UCol: conn.DB(s.DBName).C(s.DBUsersCol),
 		BCol: conn.DB(s.DBName).C(s.DBBorrowingsCol),
+		BLCol: conn.DB(s.DBName).C(s.DBBlacklistCol),
 	}, nil
 }
 
