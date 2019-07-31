@@ -1,0 +1,6 @@
+Dockerfile
+.gitignore
+README.md
+Jenkinsfile
+/app
+/db

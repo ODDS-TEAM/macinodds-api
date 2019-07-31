@@ -1,0 +1,26 @@
+version: '3.6'
+services:
+  api:
+    image: registry.odds.team/internship/macinodds-api:${BUILD_NUMBER}
+    container_name: 'macinodds-api'
+    environment:
+      - API_PORT
+      - DB_BORROWINGS_COL
+      - DB_DEVICES_COL
+      - DB_HOST
+      - DB_NAME
+      - DB_USERS_COL
+      - IMG_PATH
+    networks:
+      - macinodds-web
+      - macinodds-db
+    ports:
+      - 1323:1323
+    volumes:
+      - /home/nc-user/images:/app/mac
+    
+networks:
+  macinodds-web:
+    external: true
+  macinodds-db:
+    external: true
