@@ -42,7 +42,6 @@ func main() {
 
 	// Initialize routes
 	route.Init(e)
-
 	// Start server
 	e.Logger.Fatal(e.Start(s.APIPort))
 }
