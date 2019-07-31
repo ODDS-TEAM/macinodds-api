@@ -2,6 +2,7 @@ package api
 
 import (
 	"time"
+	
 	model "gitlab.odds.team/internship/macinodds-api/model"
 	"google.golang.org/api/oauth2/v1"
 	"gopkg.in/mgo.v2/bson"
