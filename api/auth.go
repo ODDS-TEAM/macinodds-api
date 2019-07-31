@@ -49,7 +49,7 @@ func (db *MongoDB) CheckUser(tokenInfo *oauth2.Tokeninfo) (*model.User, bool) {
 		// Create a new user to database
 		user = db.CreateUser(tokenInfo)
 		firstLogin = true
-	} else if status == "notComplete" {
+	} else if status == "notComplete kkkkk" {
 		firstLogin = true
 	}
 
